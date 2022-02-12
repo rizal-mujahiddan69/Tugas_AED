@@ -19,6 +19,13 @@ data_exp_merge <- merge(x=data_exp,y=country_code,
 
 data_exp_merge$HDI <- suppressWarnings(as.numeric(data_exp_merge$HDI))
 
+data_exp_merge <- data_exp_merge[,!(colnames(data_exp_merge) %in% c("alpha-3",
+                                                                    "country-code", "iso_3166-2", "intermediate-region", 
+                                     "region-code", "sub-region-code", 
+                                     "intermediate-region-code"))]
+ 
+View(data_exp_merge)
+
 # cek jika countrynya lebih dari satu
 # freq_data_exp <- table(data_exp$Country)
 # print(freq_data_exp[freq_data_exp>1])
@@ -36,12 +43,12 @@ mis_val
 dev.off()
 
 # check menyeleksi colomn yang 
-# missing valuenya lebih dari 10%
+# missing valuenya lebih dari 50%
 
 kolom_NA <- colSums(is.na(data_exp_merge))
 kolom_NA <- kolom_NA[kolom_NA > 0]
 pers_kolom_NA <- (kolom_NA / (dim(data_exp_merge)[1])) * 100
-kolom_hapus <- names(pers_kolom_NA[pers_kolom_NA>10])
+kolom_hapus <- names(pers_kolom_NA[pers_kolom_NA > 10]) # penentuan persentase
 kolom_NA <- kolom_NA[!(names(kolom_NA) %in% kolom_hapus)]
 data_exp_merge <- data_exp_merge[!(names(data_exp_merge) %in% kolom_hapus)]
 
@@ -59,20 +66,15 @@ data_exp_imp_chr <- names(data_exp_imp_dtype[data_exp_imp_dtype != "numeric"])
 jpeg("Histogram_pada_kolom_missing_value.jpg",width=1920,height =1080,quality=100)
 par(mfrow=c(2,9))
 
-
 num_hist <- 0
 
 for(i in data_exp_imp_num){
-  
   assign(paste("num_hist",num_hist,sep=''),ggplot(data_exp_merge,aes(.data[[i]])) + stat_bin())
   #hist(data_exp_merge[[i]],xlab=i,main=paste("Hist",i))
-  eval(paste("num_hist",num_hist,sep=''))
+  do.call(paste("num_hist",num_hist,sep=''))
   num_hist <- num_hist + 1
-  
 }
 dev.off()
-
-eval(paste("num_hist",0,sep=''))
 
 # disini saya imputasi dengan median numeric
 data_exp<- data_exp %>% 
@@ -82,4 +84,3 @@ data_exp<- data_exp %>%
   mutate_if(is.character, function(x) ifelse(is.na(x), mode(x), x))
 
 #vis_miss(data_exp[c(names(kolom_NA))]) + theme(axis.text.x = element_text(angle = 85))
-
