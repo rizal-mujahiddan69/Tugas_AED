@@ -1,11 +1,97 @@
+---
+title: An R Markdown document converted from "AED_R.ipynb"
+output: html_document
+---
+
+# Kelompok 5
+## beranggotakan
+
+1.   Rizal Mujahiddan (G64190069)
+2.   Nisma Karmiahtun F (G64190036)
+3.   Dhiya Ulayya Tsabitah (G1401201013)
+4.   Muhammad Nachnoer Novatron Fitra Arss (G1401201014)
+
+
+Install package
+
+```{r}
+install.packages("qqplotr")
+```
+
+## Download filenya
+
+```{r}
+url <- "https://docs.google.com/uc?id=1ebsw2GaAK9HdyrGyzCCYb7s7eyQ4-fJM&export=downloads"
+download.file(url,"Data untuk Eksplorasi.xlsx")
+```
+
+##Dilakukanlah uji formal
+
+```{r}
+library(readxl)
+Datasheet1 <- read_excel("Data untuk Eksplorasi.xlsx", skip = 1)
+View(Datasheet1)
+Datasheet3 <- read_excel("Data untuk Eksplorasi.xlsx", sheet = 3, skip = 2)
+colnames(Datasheet3)[2]<-c("Country") 
+DataGabungan <- merge(Datasheet3, Datasheet1, by = "Country")
+DataFix <- DataGabungan[,c(-3:-5,-8:-11)]
+
+var1<- na.omit(DataFix$`Real GDP growth ( avg last 5yrs%)`)
+var2<- na.omit(DataFix$`Loan-deposit ratio (%)`)
+```
+
+```{r}
+#kolmogorof-smirnov test
+#normal
+set.seed(42); ks.test(var1, "pnorm", mean(var1), sd(var1))
+```
+
+```{r}
+#log normal
+set.seed(42); ks.test(var1, "plnorm", mean(log(var1)), sd(log(var1)))
+```
+
+```{r}
+#chi-squares
+set.seed(42); ks.test(var1, "pchisq", mean(var1))
+```
+
+```{r}
+#eksponential
+set.seed(42); ks.test(log(var1), "pexp", 1/mean(var1))
+```
+
+##plot histogram
+
+```{r}
+library(ggplot2)
+sheet1 <- read_excel("Data untuk Eksplorasi.xlsx", skip = 1)
+sheet3 <- read_excel("Data untuk Eksplorasi.xlsx", sheet="country code", skip=2)
+colnames(sheet3)[2] <- c("Country")
+sheet_gab <- merge(sheet1, sheet3, by = "Country");
+ggplot(sheet_gab, aes(x=`Real GDP growth ( avg last 5yrs%)`,fill=`region`)) + 
+  geom_histogram(binwidth = 2, color="darkblue") + facet_wrap(~`region`)+
+  geom_vline(aes(xintercept=mean(`Real GDP growth ( avg last 5yrs%)`)), color="black",
+             linetype="dashed", size=0.5)
+```
+
+```{r}
+ggplot(sheet_gab, aes(x=`Loan-deposit ratio (% avg 5yr)`,fill=`region`)) + 
+  geom_histogram(binwidth = 8, color="darkblue") + facet_wrap(~`region`)+
+  geom_vline(aes(xintercept=mean(`Loan-deposit ratio (% avg 5yr)`)), color="black",
+             linetype="dashed", size=0.5)
+```
+
+## plot qqplot
+
+```{r}
 library(readxl)
 library(dplyr)
 library(ggplot2)
 library(qqplotr)
 
 metadata <- read_xlsx("Data untuk Eksplorasi.xlsx",
-                      sheet="penjelasan peubah",range="B2:F38",
-                      col_names=FALSE)
+                      sheet="penjelasan peubah",range="B2:F38",col_names=FALSE)
 colnames(metadata) <- c("var","nama","arti","sistem","sumber data")
 
 Sheet1 <- read_excel("Data untuk Eksplorasi.xlsx", skip=1)
@@ -16,7 +102,7 @@ Sheet3 <- read_excel("Data untuk Eksplorasi.xlsx",
 colnames(Sheet3)[2]<-c("Country");Sheet3
 Sheet13 <- merge(Sheet3, Sheet1, by="Country");Sh13<-Sheet13[,c(-3:-5,-8:-11)]
 
-s13<-S13%>%filter(region=="Asia")
+s13<- Sh13%>%filter(region=="Asia")
 S13 <- Sh13%>%arrange(region,`sub-region`);S13
 p<-as.factor(S13$`sub-region`);p
 S13$HDI <- as.numeric(S13$HDI)
@@ -26,96 +112,49 @@ S13$`sub-region`<-factor(p, levels=c("Central Asia", "Eastern Asia", "Southern A
                                      "Eastern Europe","Northern Europe","Southern Europe",
                                      "Western Europe","Latin America and the Caribbean", 
                                      "Northern America", "Australia and New Zealand"))
+```
 
-#S13$region <- replace(S13$region,S13$region=="Oceania","Asia-Oceania")
-#S13$region <- replace(S13$region,S13$region=="Asia","Asia-Oceania")
-
-#HDI
-ggplot(S13, aes(as.numeric(HDI), fill=`sub-region`))+
-  geom_histogram(binwidth=5, color="black", alpha=0.6)+
-  scale_y_continuous(labels=scales::percent_format(accuracy=1L, scale=10))+
-  facet_wrap(~`region`, ncol=2)+labs(x="Indeks Pembangunan Manusia (IPM)", y="Persentase (%)", 
-                                     fill="Sub-Wilayah", title="Perbandingan Indeks Pembangunan Manusia", 
-                                     subtitle="Berdasarkan Sub-Wilayah pada Tiap Benua")
-
-dev.off()
-
-#ggplot(S13, aes(`GDP per cap. (USD)`, fill=`sub-region`))+
-#  geom_histogram(binwidth=5, color="black", alpha=0.6)+
-#  scale_y_continuous(labels=scales::percent_format(accuracy=1L, scale=10))+
-#  facet_wrap(~`region`, ncol=2)+labs(x="Indeks Pembangunan Manusia (IPM)", y="Persentase (%)", 
-#                                     fill="Sub-Wilayah", title="Perbandingan Indeks Pembangunan Manusia", 
-#                                     subtitle="Berdasarkan Sub-Wilayah pada Tiap Benua")
-
-# GDP
-ggplot(S13, mapping=aes(x=`GDP per cap. (USD)`, fill=`sub-region`))+
-  geom_boxplot()+facet_wrap(~region, ncol=2)
-
-#Consumer
-ggplot(S13,aes(y=`Consumer prices (annual avg. % growth)`,fill=`sub-region`)) + 
-  geom_boxplot() + facet_wrap(~`region`,ncol=2)+coord_flip()
-
-# Loan
-ggplot(S13,aes(x=`Loan-deposit ratio (%)`,fill=`sub-region`)) + 
-  geom_histogram(color="black") +facet_wrap(~`region`)
-  #+ theme(panel.border = element_rect(color="red",fill = NA)) 
-
-
-ggplot(S13,aes(sample=`HDI`)) + geom_qq(distribution=qnorm) + 
-  geom_qq_line(col="blue",distribution = qnorm) + 
-  labs(x="theorectical",y="Sample",
-       title = "QQplot HDI in Gaussian Distribtion")
-
-ggplot(S13,aes(sample=`HDI`)) + 
-  geom_qq(dparams=list(shape1=1.5,shape2=1),distribution=qbeta) + 
-  geom_qq_line(dparams=list(shape1=1.5,shape2=1),
-               col="blue",distribution = qbeta) + 
-  labs(x="theorectical",y="Sample",
-       title = "QQplot HDI in Beta Distribtion")
-
-## wkwkwkwkkw
-
-
+```{r}
 ggplot(S13, aes(sample = `Loan-deposit ratio (% avg 5yr)`)) + 
   stat_qq_point()+stat_qq_line(col="red")+
   labs(x="theorectical",y="Sample",
        title = "QQplot Loan-deposit ratio (% avg 5yr) in Gaussian Distribtion")
-  #+stat_qq_band()
+```
 
-
+```{r}
 ggplot(S13, aes(sample = `Loan-deposit ratio (% avg 5yr)`)) + 
   stat_qq_point(distribution="lnorm")+  
   stat_qq_line(col="red",distribution = "lnorm")+
   labs(x="theorectical",y="Sample",
        title = "QQplot Loan-deposit ratio (% avg 5yr) in lognormal Distribtion")
-  #+stat_qq_band(distribution = "chisq",dparams = list(df=10))
+```
 
+```{r}
 ggplot(S13, aes(sample = `Loan-deposit ratio (% avg 5yr)`)) + 
   stat_qq_point(distribution="chisq")+  
   stat_qq_line(col="red",distribution = "chisq")+
   labs(x="theorectical",y="Sample", 
        title = "QQplot Loan-deposit ratio (% avg 5yr) in Chisquare Distribtion")
-  #+  stat_qq_band(distribution = "beta",
-                #  dparams = list(shape1=3,shape2=300))
+```
 
+```{r}
 ggplot(S13, aes(sample = `Loan-deposit ratio (% avg 5yr)`)) + 
   stat_qq_point(distribution="exp")+
   stat_qq_line(col="red",distribution="exp")+
   labs(x="theorectical",y="Sample",
        title = "QQplot Loan-deposit ratio (% avg 5yr) in exponensial Distribtion")
-  
-ggplot(S13, aes(sample = `Loan-deposit ratio (% avg 5yr)`)) + 
-  stat_qq_point() + stat_qq_line(col="red") + 
-  facet_wrap(~`region`)+
-  labs(title = "QQplot Loan-deposit ratio (% avg 5yr) by region")
+```
 
-# data Real GDP growth (%)
+
+
+```{r}
 ggplot(S13, aes(sample = `Real GDP growth ( avg last 5yrs%)`)) + 
   stat_qq_point()+stat_qq_line(col="red")+
   labs(x="theorectical",y="Sample",
        title = "QQplot Real GDP growth ( avg last 5yrs%) in Gaussian Distribtion")
+```
 
-
+```{r}
 ggplot(S13, aes(sample = `Real GDP growth ( avg last 5yrs%)`)) + 
   stat_qq_point(distribution = "chisq",
                 dparams = list(df = mean(S13$`Real GDP growth ( avg last 5yrs%)`)))+
@@ -123,17 +162,18 @@ ggplot(S13, aes(sample = `Real GDP growth ( avg last 5yrs%)`)) +
                dparams = list(df = mean(S13$`Real GDP growth ( avg last 5yrs%)`)))+
   labs(x="theorectical",y="Sample",
        title = "QQplot Real GDP growth ( avg last 5yrs%) in Chisquare Distribtion")
+```
 
-
-
+```{r}
 ggplot(S13, aes(sample = `Real GDP growth ( avg last 5yrs%)`)) + 
   stat_qq_point(distribution="lnorm",
                 dparams=list(meanlog=mean(log(S13$`Real GDP growth ( avg last 5yrs%)`)),
                              sdlog = sd(log(S13$`Real GDP growth ( avg last 5yrs%)`))))+  
   labs(x="theorectical",y="Sample",
        title = "QQplot Real GDP growth ( avg last 5yrs%) in lognormal Distribtion")
+```
 
-
+```{r}
 ggplot(S13, aes(sample = `Real GDP growth ( avg last 5yrs%)`)) + 
   stat_qq_point(distribution="exp",
                 dparams=list(rate=1/mean(S13$`Real GDP growth ( avg last 5yrs%)`)))+  
@@ -141,23 +181,39 @@ ggplot(S13, aes(sample = `Real GDP growth ( avg last 5yrs%)`)) +
                dparams = list(rate=1/mean(S13$`Real GDP growth ( avg last 5yrs%)`)))+
   labs(x="theorectical",y="Sample",
        title = "QQplot Real GDP growth ( avg last 5yrs%) in exponential Distribtion")
+```
 
+```{r}
+ggplot(S13, aes(sample = `Loan-deposit ratio (% avg 5yr)`)) + 
+  stat_qq_point() + stat_qq_line(col="red") + 
+  facet_wrap(~`region`)+
+  labs(title = "QQplot Loan-deposit ratio (% avg 5yr) by region")
+```
+
+```{r}
 ggplot(S13, aes(sample = `Real GDP growth ( avg last 5yrs%)`)) + 
   stat_qq_point() + stat_qq_line(col="red") + 
   facet_wrap(~`region`)+
   labs(title = "QQplot Real GDP growth ( avg last 5yrs%) by region")
+```
 
+## plot boxplot
 
-ggplot(S13,aes(x=`Real GDP growth ( avg last 5yrs%)`,
-               y=`Loan-deposit ratio (% avg 5yr)`)) + geom_point()
+```{r}
+ggplot(S13, mapping=aes(x=`Real GDP growth ( avg last 5yrs%)`, y=region))+
+  geom_boxplot(alpha=0.7, fill=c("#03d3f2", "#ffcd88", "#ff8fb4","#fffe98","#06d8ae"),
+  outlier.fill = "#fd7576", outlier.size=1.96, outlier.alpha=0.5, shape=8)+ 
+  labs(title="Sebaran Pertumbuhan PDB Riil Antar Benua",subtitle="Dalam 5 Tahun Terakhir", 
+        x="Pertumbuhan PDB Riil(%)", y="Benua")+
+  theme_bw()+coord_flip()+stat_summary(fun="mean")
+```
 
-ggplot(S13,aes(x=`Real GDP growth ( avg last 5yrs%)`,
-               y=log(`Loan-deposit ratio (% avg 5yr)`))) + geom_point()
-cor(x=S13$`Loan-deposit ratio (% avg 5yr)`,
-    y=S13$`Real GDP growth ( avg last 5yrs%)`,
-    use="na.or.complete")
-
-cor(x=log(S13$`Loan-deposit ratio (% avg 5yr)`),
-    y=(S13$`Real GDP growth ( avg last 5yrs%)`),
-    use="na.or.complete")
+```{r}
+ggplot(S13, mapping=aes(x=`Loan-deposit ratio (% avg 5yr)`, y=region))+
+geom_boxplot(alpha=0.7, fill=c("#03d3f2", "#ffcd88", "#ff8fb4","#fffe98","#06d8ae"),
+outlier.fill = "#fd7576", outlier.size=1.96, outlier.alpha=0.5, shape=8)+ 
+  labs(title="Sebaran Rataan Loan-Deposit Ratio (LDR) Antar Benua", 
+  subtitle="Dalam 5 Tahun Terakhir", x="LDR(%)", y="Benua")+
+  theme_bw()+coord_flip()+stat_summary(fun="mean")
+```
 

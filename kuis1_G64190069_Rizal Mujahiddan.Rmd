@@ -1,0 +1,322 @@
+---
+title: "Kuis1_G64190069_Rizal Mujahiddan"
+author: "Rizal Mujahiddan"
+date: "2/19/2022"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+datasetku <- read.csv("Kuis UTS 1.csv")
+print(names(datasetku))
+print(datasetku$socialst)
+head(datasetku)
+```
+```{r}
+library(ggplot2)
+
+ggplot(datasetku,aes(`gdp90`)) + geom_histogram() + 
+  labs(title="histogram pada variabel gdp90") + 
+  theme(plot.title = element_text(hjust=0.5))
+
+ggplot(datasetku,aes(`gdp95`)) + geom_histogram() + 
+  labs(title="histogram pada variabel gdp95") + 
+  theme(plot.title = element_text(hjust=0.5))
+
+ggplot(datasetku,aes(`lifex65`)) + geom_histogram()+ 
+  labs(title="histogram pada variabel lifex65") + 
+  theme(plot.title = element_text(hjust=0.5))
+
+ggplot(datasetku,aes(`malfal94`)) + geom_histogram() + 
+  labs(title="histogram pada variabel malfa94") + 
+  theme(plot.title = element_text(hjust=0.5))
+
+ggplot(datasetku,aes(`urbpop95`)) + geom_histogram() + 
+  labs(title="histogram pada variabel urbpop95") + 
+  theme(plot.title = element_text(hjust=0.5))
+
+```
+## Penjelasan
+untuk gdp90 dan gdp95 itu jika ditinjau menyebar eksponensial
+sedangkan untuk lifex65 dan urbpop95 itu bersifat menyebar normal
+untuk malfal94 ini diperkirakan persebaran binomial ya
+
+
+
+
+untuk saat ini penulis meninjau berdasarkan keseluruhan dahulu, baru dibagi
+berdasarkan subregion atau region
+
+
+
+
+
+
+
+```{r}
+ggplot(datasetku,aes(sample = `gdp90`)) + 
+  geom_qq(distribution = qexp) +
+  geom_qq_line(distribution = qexp,col='red')+ 
+  labs(title="exponential distribution gdp90")+ 
+  theme(plot.title = element_text(hjust=0.5))
+
+ggplot(datasetku,aes(sample = `gdp95`)) + 
+  geom_qq(distribution = qexp) +
+  geom_qq_line(distribution = qexp,col='red')+
+  labs(title="exponential distribution gdp95")+ 
+  theme(plot.title = element_text(hjust=0.5))
+
+der_chi <- 2
+
+ggplot(datasetku,aes(sample = `gdp90`)) + 
+  geom_qq(distribution = qchisq,dparams = list(df=der_chi)) +
+  geom_qq_line(distribution = qchisq,dparams = list(df=der_chi),col='red')+
+  labs(title="chisquare distribution gdp90")+ 
+  theme(plot.title = element_text(hjust=0.5))
+
+ggplot(datasetku,aes(sample = `gdp95`)) + 
+  geom_qq(distribution = qchisq,dparams = list(df=der_chi)) +
+  geom_qq_line(distribution = qchisq,dparams = list(df=der_chi),col='red')+
+  labs(title="chisquare distribution gdp95")+ 
+  theme(plot.title = element_text(hjust=0.5))
+```
+
+
+
+```{r}
+ggplot(datasetku,aes(sample = `gdp90`)) + 
+  geom_qq(distribution = qlnorm,
+          dparams = list(meanlog=mean(log(datasetku$gdp90)),
+                         sd = sd(log(datasetku$gdp90)))) +
+  geom_qq_line(distribution = qlnorm, 
+               dparams = list(meanlog=mean(log(datasetku$gdp90))),
+                         sd = sd(log(datasetku$gdp90)),col='red')+
+  labs(title="lognorm distribution gdp90")+ 
+  theme(plot.title = element_text(hjust=0.5))
+
+ggplot(datasetku,aes(sample = `gdp95`)) + 
+  geom_qq(distribution = qlnorm,
+          dparams = list(meanlog=mean(log(datasetku$gdp95)),
+                         sd = sd(log(datasetku$gdp95)))) +
+  geom_qq_line(distribution = qlnorm, 
+               dparams = list(meanlog=mean(log(datasetku$gdp95))),
+                         sd = sd(log(datasetku$gdp95)),col='red')+
+  labs(title="lognorm distribution gdp95")+ 
+  theme(plot.title = element_text(hjust=0.5))
+```
+
+
+dites dengan berbagai ,kemungkinan yang terbaik antara lognorm, chisquare
+hingga exponensial , maka diperlukan ks.test atau kolmogorov sminorv test
+
+```{r}
+print("lognorm")
+ks.test(datasetku$gdp90,"plnorm",mean(log(datasetku$gdp90)),sd(log(datasetku$gdp90)))
+
+```
+dengan dilakukan lognormal, maka hasilnya yang cocok adalah lognormal ya
+ini untuk variable gdp90
+
+
+```{r}
+print("lognorm")
+ks.test(datasetku$gdp95,"plnorm",mean(log(datasetku$gdp95)),sd(log(datasetku$gdp95)))
+```
+
+begitu juga dengan, maka hasilnya yang cocok adalah persebaran lognormal ya
+ini untuk variable gdp95
+
+```{r}
+mean(datasetku$urbpop95)
+```
+
+
+```{r}
+ggplot(datasetku,aes(sample = `urbpop95`)) + 
+  geom_qq() +
+  geom_qq_line(col='red')+ 
+  labs(title="Gaussian distribution urbpop95")+ 
+  theme(plot.title = element_text(hjust=0.5))
+
+ggplot(datasetku,aes(sample = `lifex65`)) + 
+  geom_qq() +
+  geom_qq_line(col='red')+
+  labs(title="Gaussian distribution lifex65")+ 
+  theme(plot.title = element_text(hjust=0.5))
+
+```
+
+urbpop95 lebih cocok ke lognormal ya
+
+```{r}
+
+rate1 <- mean(datasetku$urbpop95)
+rate2 <- mean(datasetku$lifex65)
+
+ggplot(datasetku,aes(sample = `urbpop95`)) + 
+  geom_qq(distribution = qexp) +
+  geom_qq_line(distribution = qexp,col='red')+ 
+  labs(title="exponential distribution urbpop95")+ 
+  theme(plot.title = element_text(hjust=0.5))
+
+ggplot(datasetku,aes(sample = `lifex65`)) + 
+  geom_qq(distribution = qexp) +
+  geom_qq_line(distribution = qexp,col='red')+
+  labs(title="exponential distribution lifex65")+ 
+  theme(plot.title = element_text(hjust=0.5))
+
+
+ggplot(datasetku,aes(sample = `urbpop95`)) + 
+  geom_qq(distribution = qchisq,dparams = list(df=rate1)) +
+  geom_qq_line(distribution = qchisq,dparams = list(df=rate1),col='red')+
+  labs(title="chisquare distribution urbpop95")+ 
+  theme(plot.title = element_text(hjust=0.5))
+
+ggplot(datasetku,aes(sample = `lifex65`)) + 
+  geom_qq(distribution = qchisq,dparams = list(df=rate2)) +
+  geom_qq_line(distribution = qchisq,dparams = list(df=rate2),col='red')+
+  labs(title="chisquare distribution lifex65")+ 
+  theme(plot.title = element_text(hjust=0.5))
+```
+
+urbpop lebih cocok juga chisquare juga yaaa
+
+
+
+```{r}
+
+ggplot(datasetku,aes(sample = `urbpop95`)) + 
+  geom_qq(distribution = qlnorm,
+          dparams = list(meanlog=mean(log(datasetku$urbpop95)),
+                         sd = sd(log(datasetku$urbpop95)))) +
+  geom_qq_line(distribution = qlnorm, 
+               dparams = list(meanlog=mean(log(datasetku$urbpop95))),
+                         sd = sd(log(datasetku$urbpop95)),col='red')+
+  labs(title="lognorm distribution urbpop95")+ 
+  theme(plot.title = element_text(hjust=0.5))
+
+ggplot(datasetku,aes(sample = `lifex65`)) + 
+  geom_qq(distribution = qlnorm,
+          dparams = list(meanlog=mean(log(datasetku$lifex65)),
+                         sd = sd(log(datasetku$lifex65)))) +
+  geom_qq_line(distribution = qlnorm, 
+               dparams = list(meanlog=mean(log(datasetku$lifex65))),
+                         sd = sd(log(datasetku$lifex65)),col='red')+
+  labs(title="lognorm distribution lifex65")+ 
+  theme(plot.title = element_text(hjust=0.5))
+
+
+```
+
+lognormal malah tidak cocok,
+
+
+
+```{r}
+ks.test(datasetku$urbpop95,"pnorm",mean(datasetku$urbpop95),sd(datasetku$urbpop95))
+
+```
+untuk urbpop95 ya cocok ke distribusi normal
+
+```{r}
+ks.test(datasetku$lifex65,"plnorm",mean(log(datasetku$lifex65)),sd(log(datasetku$lifex65)))
+
+```
+Disini lebih cocok digunakan lognormal dibandingkan yang lain yaaa
+
+
+
+```{r}
+ggplot(datasetku,aes(sample = `gdp90`)) +
+  geom_qq() +
+  geom_qq_line(col='red') + facet_wrap(~`region`) + labs(title='gdp90')
+
+ggplot(datasetku,aes(sample = `gdp95`)) +
+  geom_qq() +
+  geom_qq_line(col='red') + facet_wrap(~`region`)+ labs(title='gdp95')
+
+
+ggplot(datasetku,aes(sample = `lifex65`)) +
+  geom_qq() +
+  geom_qq_line(col='red') + facet_wrap(~`region`)+ labs(title='lifex65')
+
+ggplot(datasetku,aes(sample = `malfal94`)) +
+  geom_qq() +
+  geom_qq_line(col='red') + facet_wrap(~`region`)+ labs(title='malfal94')
+
+ggplot(datasetku,aes(sample = `urbpop95`)) +
+  geom_qq() +
+  geom_qq_line(col='red') + facet_wrap(~`region`)+ labs(title='urbpop95')
+
+```
+jika dilihat qqplot maka ada nilai yang menyebar normal semua dari kelima dan semua grid
+kecuali pada maltex94 pada africa yaaa, ada suatu kendala disini ya
+
+
+```{r}
+ggplot(datasetku,aes(sample = `gdp90`)) +
+  geom_qq()+geom_qq_line(col='red') + facet_wrap(~`socialst`) + labs(title='gdp90')
+
+ggplot(datasetku,aes(sample = `gdp95`)) +
+  geom_qq() +
+  geom_qq_line(col='red') + facet_wrap(~`socialst`)+ labs(title='gdp95')
+
+
+ggplot(datasetku,aes(sample = `lifex65`)) +
+  geom_qq() +
+  geom_qq_line(col='red') + facet_wrap(~`socialst`)+ labs(title='lifex65')
+
+ggplot(datasetku,aes(sample = `malfal94`)) +
+  geom_qq() +
+  geom_qq_line(col='red') + facet_wrap(~`socialst`)+ labs(title='malfal94')
+
+ggplot(datasetku,aes(sample = `urbpop95`)) +
+  geom_qq() +
+  geom_qq_line(col='red') + facet_wrap(~`socialst`)+ labs(title='urbpop95')
+
+```
+
+hanya pada urbpop95 mendekati normal yaaa, sehingga bisa ditinjau ulang , dikarenakan
+distribusi normal seharusnya dalam kejadian di statistik
+
+```{r}
+ggplot(datasetku,aes(x = `gdp90`,y=`region`,fill=`region`)) +
+  geom_boxplot()  + labs(title='gdp90')+coord_flip() + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(datasetku,aes(x = `gdp95`,y=`region`,fill=`region`)) +
+  geom_boxplot()  + labs(title='gdp95')+coord_flip()+ 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(datasetku,aes(x = `lifex65`,y=`region`,fill=`region`)) +
+  geom_boxplot()  + labs(title='lifex65')+coord_flip()+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(datasetku,aes(x = `malfal94`,y=`region`,fill=`region`)) +
+  geom_boxplot()  + labs(title='malfal94')+coord_flip()+
+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+ggplot(datasetku,aes(x = `urbpop95`,y=`region`,fill=`region`)) +
+  geom_boxplot()  + labs(title='urbpop95')+coord_flip()+
+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+```
+
+
+
+
+pencilan di gdp 90  dibanding gdp 95, urbpop 95 bagus nah ini kenapa , 
+
+
+
+ini dikarenakan waktu jadi kurang lengkap , mohon maafkan saya apabila kurang lengkap
+
+
+
+
+
