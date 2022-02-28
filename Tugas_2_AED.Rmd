@@ -76,6 +76,8 @@ ggplot(DA,aes(x=`GDP per cap. (USD)`)) + geom_density()
 
 ggplot(DA,aes(x=`Boxcox GDP per cap. (USD)`)) + geom_density()
 
+ggplot(DA,aes(x=`GDP per cap. (USD)`)) + 
+  geom_boxplot() 
 
 ggplot(DA,aes(y=`GDP per cap. (USD)`,x=reorder(`sub-region`,`GDP per cap. (USD)`),
               fill=`sub-region`)) + geom_boxplot() 
@@ -176,9 +178,66 @@ plot(density(DA[DA["sub-region"]=="South-eastern Asia","GDP per cap. (USD)"]),
 ```
 
 ```{r}
+
+
+ggplot(DA.NOTCA,aes(y=`GDP per cap. (USD)`,color='blue')) + 
+  geom_boxplot(color='blue') 
+
 ggplot(DA.NOTCA,aes(y=`GDP per cap. (USD)`,x=reorder(`sub-region`,`GDP per cap. (USD)`),fill=`sub-region`)) + geom_boxplot() 
 
 ```
+
+
+```{r}
+ggplot(DA,aes(`Consumer prices ( avg annual avg. % growth 5yrs)`))+
+  geom_density()
+```
+
+
+```{r}
+consum_T <- DA$`Consumer prices ( avg annual avg. % growth 5yrs)`
+
+## harus postif
+batas_consum <-min(consum_T)
+consum_T <- consum_T - batas_consum +2
+
+min(consum_T)
+
+
+consum_T_bc <- MASS::boxcox(consum_T ~ 1)
+lambda <- consum_T_bc$x[which.max(consum_T_bc$y)]
+consum_T <- ((consum_T^lambda) - 1)/lambda
+print(lambda)
+
+plot(density(consum_T))
+```
+
+
+
+```{r}
+ggplot(DA.NOTCA,aes(x=`Consumer prices ( avg annual avg. % growth 5yrs)`)) +
+  facet_wrap(`sub-region` ~ ., nrow=4) + geom_density()
+```
+```{r}
+DA.NOTCA
+con_eas_as <- DA.NOTCA[DA.NOTCA=="Eastern Asia",
+                       "Consumer prices ( avg annual avg. % growth 5yrs)"]
+con_soe_as <- DA.NOTCA[DA.NOTCA=="South-eastern Asia",
+                       "Consumer prices ( avg annual avg. % growth 5yrs)"]
+con_south_as <- DA.NOTCA[DA.NOTCA=="Southern Asia",
+                       "Consumer prices ( avg annual avg. % growth 5yrs)"]
+con_wes_as <- DA.NOTCA[DA.NOTCA=="Western Asia",
+                       "Consumer prices ( avg annual avg. % growth 5yrs)"]
+
+
+
+
+
+
+```
+
+
+
 
 
 
