@@ -67,14 +67,14 @@ print(paste(min(DA$`GDP per cap. (USD)`),max(DA$`GDP per cap. (USD)`)))
 gdp.per.cap <- powerTransform(DA$`GDP per cap. (USD)`)
 lambdaku <- gdp.per.cap$lambda
 
-DA$`Tukey GDP per cap. (USD)` <- (DA$`GDP per cap. (USD)`^lambdaku - 1)/lambdaku
+DA$`Boxcox GDP per cap. (USD)` <- (DA$`GDP per cap. (USD)`^lambdaku - 1)/lambdaku
 
 ```                                    
                                     
 ```{r}
 ggplot(DA,aes(x=`GDP per cap. (USD)`)) + geom_density()
 
-ggplot(DA,aes(x=`Tukey GDP per cap. (USD)`)) + geom_density()
+ggplot(DA,aes(x=`Boxcox GDP per cap. (USD)`)) + geom_density()
 ```
 ```{r}
 
@@ -110,27 +110,32 @@ GDP_sub_region_central <- DA[DA$`sub-region`=="Central Asia","GDP per cap. (USD)
 ggplot(DA,aes(x = `GDP per cap. (USD)`,fill= `sub-region`)) + 
   geom_density() +  facet_wrap(`sub-region` ~ . ,nrow=5)
 ```
+```{r}
+is.numeric(GDP_sub_region_western)
+```
+
 
 ```{r}
-GDP_sub_region_western_bc <- boxcox(GDP_sub_region_western ~ 1)
+library(MASS)
+GDP_sub_region_western_bc <- MASS::boxcox(GDP_sub_region_western ~ 1)
 lambda <- GDP_sub_region_western_bc$x[which.max(GDP_sub_region_western_bc$y)]
 GDP_sub_region_western <- (GDP_sub_region_western^lambda - 1)/lambda
 ```
 
 # GDP_sub_region_southern<- transformTukey(GDP_sub_region_southern,plotit=FALSE)
 ```{r}
-GDP_sub_region_southern_bc <- boxcox(GDP_sub_region_southern ~ 1)
+GDP_sub_region_southern_bc <- MASS::boxcox(GDP_sub_region_southern ~ 1)
 lambda <- GDP_sub_region_southern_bc$x[which.max(GDP_sub_region_southern_bc$y)]
 GDP_sub_region_southern <- (GDP_sub_region_southern^lambda - 1)/lambda
 ```
 
 ```{r}
-GDP_sub_region_eastern_bc <- boxcox(GDP_sub_region_eastern ~ 1)
+GDP_sub_region_eastern_bc <- MASS::boxcox(GDP_sub_region_eastern ~ 1)
 lambda <- GDP_sub_region_eastern_bc$x[which.max(GDP_sub_region_eastern_bc$y)]
 GDP_sub_region_eastern <- (GDP_sub_region_eastern^lambda - 1)/lambda
 ```
 ```{r}
-GDP_sub_region_south_eastern_bc <- boxcox(GDP_sub_region_south_eastern ~ 1)
+GDP_sub_region_south_eastern_bc <- MASS::boxcox(GDP_sub_region_south_eastern ~ 1)
 lambda <- GDP_sub_region_south_eastern_bc$x[which.max(GDP_sub_region_south_eastern_bc$y)]
 GDP_sub_region_south_eastern <- (GDP_sub_region_south_eastern^lambda - 1)/lambda
 ```
