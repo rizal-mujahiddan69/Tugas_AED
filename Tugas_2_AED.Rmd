@@ -160,4 +160,3 @@ plot(density(DA[DA["sub-region"]=="South-eastern Asia","GDP per cap. (USD)"]),
      main="South Eastern Asia")
 
 ```
-
