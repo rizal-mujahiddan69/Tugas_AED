@@ -86,8 +86,9 @@ batas_GDP
 library(bestNormalize)
 x_gdp <- DA$`GDP per cap. (USD)`
 gdp.bc <- bestNormalize(x_gdp)
-gdp.bc <- gdp.bc$x.t
-plot(density(gdp.bc))
+print(gdp.bc)
+gdpnorm <- gdp.bc$x.t
+plot(density(gdpnorm))
 ```
 
 
