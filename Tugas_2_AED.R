@@ -1,0 +1,163 @@
+---
+title: "Tugas2_AED"
+author: "Rizal Mujahiddan"
+date: "2/28/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+ip = as.data.frame(installed.packages()[,c(1,3:4)])
+ip = ip[is.na(ip$Priority),1:2,drop=FALSE]
+ip = ip$Package
+```
+
+```{r}
+#if(("rcompanion" %in% ip) ==FALSE){
+#  install.packages("rcompanion")
+#}
+#if(("MASS" %in% ip) ==FALSE){
+#  install.packages("MASS")
+#}
+#if(("dplyr" %in% ip) ==FALSE){
+#  install.packages("dplyr")
+#}
+#if(("multcompView" %in% ip) ==FALSE){
+#  install.packages("multcompView")
+#}
+#if(("car" %in% ip) ==FALSE){
+#  install.packages("car")
+#}
+#if(("AID" %in% ip) ==FALSE){
+#  install.packages("AID")
+#}
+
+# install ya yang ada di sini ya
+
+ip = as.data.frame(installed.packages()[,c(1,3:4)])
+ip = ip[is.na(ip$Priority),1:2,drop=FALSE]
+ip = ip$Package
+```
+
+
+```{r}
+#####Package#####
+library(readxl)
+library(ggplot2)
+library(dplyr)
+library(MASS)
+library(multcompView)
+library(rcompanion)
+library(car)
+library(AID)
+
+#####Input data#####
+Data2 <- read_xlsx("Data Tugas 2.xlsx", sheet = "data", skip=1)
+country <-  read_xlsx("Data Tugas 2.xlsx", sheet = "country code", skip=1)
+colnames(country)[2] <- colnames(Data2)[1]
+Dc<-merge(country, Data2, by="Country");DC<-Dc[,-c(3:5,8:11)]
+DA <- DC%>%filter(region=="Asia");DC.Asia<-DA[,-3]
+
+head(DA)
+```
+```{r}
+print(paste(min(DA$`GDP per cap. (USD)`),max(DA$`GDP per cap. (USD)`)))
+gdp.per.cap <- powerTransform(DA$`GDP per cap. (USD)`)
+lambdaku <- gdp.per.cap$lambda
+
+DA$`Tukey GDP per cap. (USD)` <- (DA$`GDP per cap. (USD)`^lambdaku - 1)/lambdaku
+
+```                                    
+                                    
+```{r}
+ggplot(DA,aes(x=`GDP per cap. (USD)`)) + geom_density()
+
+ggplot(DA,aes(x=`Tukey GDP per cap. (USD)`)) + geom_density()
+```
+```{r}
+
+batas_GDP <- min(DA$`GDP per cap. (USD)`)
+batas_GDP
+```
+```{r}
+
+library(bestNormalize)
+x_gdp <- DA$`GDP per cap. (USD)`
+gdp.bc <- bestNormalize(x_gdp)
+gdp.bc <- gdp.bc$x.t
+plot(density(gdp.bc))
+```
+
+
+
+
+"""Dikarenakan ketika di transformasikan menghasilkan bimodal distribution, maka diperlukan suatu perhatian khusus yahh. dikarenakan hal itu. maka kpenulis akan mentransformasi berdasarkan
+
+# coba
+"""
+```{r}
+unique(DA$`sub-region`)
+```
+```{r}
+GDP_sub_region_western <- DA[DA$`sub-region`=="Western Asia","GDP per cap. (USD)"]
+GDP_sub_region_southern <- DA[DA$`sub-region`=="Southern Asia","GDP per cap. (USD)"]
+GDP_sub_region_eastern <- DA[DA$`sub-region`=="Eastern Asia","GDP per cap. (USD)"]
+GDP_sub_region_south_eastern <- DA[DA$`sub-region`=="South-eastern Asia","GDP per cap. (USD)"]
+GDP_sub_region_central <- DA[DA$`sub-region`=="Central Asia","GDP per cap. (USD)"]
+
+ggplot(DA,aes(x = `GDP per cap. (USD)`,fill= `sub-region`)) + 
+  geom_density() +  facet_wrap(`sub-region` ~ . ,nrow=5)
+```
+
+```{r}
+GDP_sub_region_western_bc <- boxcox(GDP_sub_region_western ~ 1)
+lambda <- GDP_sub_region_western_bc$x[which.max(GDP_sub_region_western_bc$y)]
+GDP_sub_region_western <- (GDP_sub_region_western^lambda - 1)/lambda
+```
+
+# GDP_sub_region_southern<- transformTukey(GDP_sub_region_southern,plotit=FALSE)
+```{r}
+GDP_sub_region_southern_bc <- boxcox(GDP_sub_region_southern ~ 1)
+lambda <- GDP_sub_region_southern_bc$x[which.max(GDP_sub_region_southern_bc$y)]
+GDP_sub_region_southern <- (GDP_sub_region_southern^lambda - 1)/lambda
+```
+
+```{r}
+GDP_sub_region_eastern_bc <- boxcox(GDP_sub_region_eastern ~ 1)
+lambda <- GDP_sub_region_eastern_bc$x[which.max(GDP_sub_region_eastern_bc$y)]
+GDP_sub_region_eastern <- (GDP_sub_region_eastern^lambda - 1)/lambda
+```
+```{r}
+GDP_sub_region_south_eastern_bc <- boxcox(GDP_sub_region_south_eastern ~ 1)
+lambda <- GDP_sub_region_south_eastern_bc$x[which.max(GDP_sub_region_south_eastern_bc$y)]
+GDP_sub_region_south_eastern <- (GDP_sub_region_south_eastern^lambda - 1)/lambda
+```
+
+```{r}
+DA[DA$`sub-region`=="Western Asia","GDP per cap. (USD)"] <- GDP_sub_region_western
+DA[DA$`sub-region`=="Southern Asia","GDP per cap. (USD)"] <- GDP_sub_region_southern
+DA[DA$`sub-region`=="Eastern Asia","GDP per cap. (USD)"] <- GDP_sub_region_eastern
+DA[DA$`sub-region`=="South-eastern Asia","GDP per cap. (USD)"] <- GDP_sub_region_south_eastern
+
+DA.NOTCA <- DA %>% filter(`sub-region` != "Central Asia")
+
+ggplot(DA.NOTCA,aes(x = `GDP per cap. (USD)`,fill= `sub-region`)) + 
+  geom_density() +  facet_wrap(`sub-region` ~ . ,nrow=5)
+```
+
+
+"""# lanjut"""
+```{r}
+plot(density(DA[DA["sub-region"]=="Southern Asia","GDP per cap. (USD)"]),
+     main="Southern Asia")
+plot(density(DA[DA["sub-region"]=="Western Asia","GDP per cap. (USD)"]),
+     main="Western Asia")
+plot(density(DA[DA["sub-region"]=="Eastern Asia","GDP per cap. (USD)"]),
+     main="Eastern Asia")
+plot(density(DA[DA["sub-region"]=="South-eastern Asia","GDP per cap. (USD)"]),
+     main="South Eastern Asia")
+
+```
+
