@@ -75,6 +75,10 @@ DA$`Boxcox GDP per cap. (USD)` <- (DA$`GDP per cap. (USD)`^lambdaku - 1)/lambdak
 ggplot(DA,aes(x=`GDP per cap. (USD)`)) + geom_density()
 
 ggplot(DA,aes(x=`Boxcox GDP per cap. (USD)`)) + geom_density()
+
+
+ggplot(DA,aes(y=`GDP per cap. (USD)`,x=reorder(`sub-region`,`GDP per cap. (USD)`),
+              fill=`sub-region`)) + geom_boxplot() 
 ```
 ```{r}
 
@@ -97,6 +101,10 @@ plot(density(gdpnorm))
 """Dikarenakan ketika di transformasikan menghasilkan bimodal distribution, maka diperlukan suatu perhatian khusus yahh. dikarenakan hal itu. maka kpenulis akan mentransformasi berdasarkan
 
 # coba
+
+
+
+
 """
 ```{r}
 unique(DA$`sub-region`)
@@ -166,3 +174,16 @@ plot(density(DA[DA["sub-region"]=="South-eastern Asia","GDP per cap. (USD)"]),
      main="South Eastern Asia")
 
 ```
+
+```{r}
+ggplot(DA.NOTCA,aes(y=`GDP per cap. (USD)`,x=reorder(`sub-region`,`GDP per cap. (USD)`),fill=`sub-region`)) + geom_boxplot() 
+
+```
+
+
+
+
+
+
+
+
