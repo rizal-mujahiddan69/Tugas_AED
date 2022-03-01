@@ -192,7 +192,12 @@ ggplot(DA.NOTCA,aes(y=`GDP per cap. (USD)`,x=reorder(`sub-region`,`GDP per cap. 
 ggplot(DA,aes(`Consumer prices ( avg annual avg. % growth 5yrs)`))+
   geom_density()
 ```
-
+```{r}
+ggplot(DA.NOTCA,aes(y=`Consumer prices ( avg annual avg. % growth 5yrs)`,
+                    x=reorder(`sub-region`,`Consumer prices ( avg annual avg. % growth 5yrs)`),
+                    fill=`sub-region`)) + 
+  geom_boxplot() 
+```
 
 ```{r}
 consum_T <- DA$`Consumer prices ( avg annual avg. % growth 5yrs)`
@@ -273,7 +278,12 @@ ggplot(DA.NOTCA,aes(x=`Consumer prices ( avg annual avg. % growth 5yrs)`,fill=`s
   theme(legend.position = "none")
 
 ```
-
+```{r}
+ggplot(DA.NOTCA,aes(y=`Consumer prices ( avg annual avg. % growth 5yrs)`,
+                    x=reorder(`sub-region`,`Consumer prices ( avg annual avg. % growth 5yrs)`),
+                    fill=`sub-region`)) + 
+  geom_boxplot() 
+```
 
 
 
