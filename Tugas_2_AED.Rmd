@@ -215,34 +215,74 @@ plot(density(consum_T))
 
 
 ```{r}
-ggplot(DA.NOTCA,aes(x=`Consumer prices ( avg annual avg. % growth 5yrs)`)) +
-  facet_wrap(`sub-region` ~ ., nrow=4) + geom_density()
+ggplot(DA.NOTCA,aes(x=`Consumer prices ( avg annual avg. % growth 5yrs)`,fill=`sub-region`)) +
+  facet_wrap(`sub-region` ~ ., nrow=4) + geom_density()+
+  theme(legend.position = "none")
 ```
+
 ```{r}
-DA.NOTCA
-con_eas_as <- DA.NOTCA[DA.NOTCA=="Eastern Asia",
+con_eas_as <- DA.NOTCA[DA.NOTCA$`sub-region`=="Eastern Asia",
                        "Consumer prices ( avg annual avg. % growth 5yrs)"]
-con_soe_as <- DA.NOTCA[DA.NOTCA=="South-eastern Asia",
+con_soe_as <- DA.NOTCA[DA.NOTCA$`sub-region`=="South-eastern Asia",
                        "Consumer prices ( avg annual avg. % growth 5yrs)"]
-con_south_as <- DA.NOTCA[DA.NOTCA=="Southern Asia",
+con_south_as <- DA.NOTCA[DA.NOTCA$`sub-region`=="Southern Asia",
                        "Consumer prices ( avg annual avg. % growth 5yrs)"]
-con_wes_as <- DA.NOTCA[DA.NOTCA=="Western Asia",
+con_wes_as <- DA.NOTCA[DA.NOTCA$`sub-region`=="Western Asia",
                        "Consumer prices ( avg annual avg. % growth 5yrs)"]
 
+# di Transformasi yah
+con_wes_as <- con_wes_as + 2
+
+```
 
 
 
+```{r}
 
+con_eas_as_bc <- MASS::boxcox(con_eas_as ~ 1)
+lambda <- con_eas_as_bc$x[which.max(con_eas_as_bc$y)]
+con_eas_as <- (con_eas_as^lambda - 1)/lambda
+
+
+con_soe_as_bc <- MASS::boxcox(con_soe_as ~ 1)
+lambda <- con_soe_as_bc$x[which.max(con_soe_as_bc$y)]
+con_soe_as <- (con_soe_as^lambda - 1)/lambda
+
+con_south_as_bc <- MASS::boxcox(con_south_as ~ 1)
+lambda <- con_south_as_bc$x[which.max(con_south_as_bc$y)]
+con_south_as <- (con_south_as^lambda - 1)/lambda
+
+
+con_wes_as_bc <- MASS::boxcox(con_wes_as ~ 1)
+lambda <- con_wes_as_bc$x[which.max(con_wes_as_bc$y)]
+con_wes_as <- (con_wes_as^lambda - 1)/lambda
+
+```
+
+```{r}
+DA.NOTCA[DA.NOTCA$`sub-region`=="Eastern Asia","Consumer prices ( avg annual avg. % growth 5yrs)"] <- con_eas_as
+DA.NOTCA[DA.NOTCA$`sub-region`=="South-eastern Asia","Consumer prices ( avg annual avg. % growth 5yrs)"] <- con_soe_as
+DA.NOTCA[DA.NOTCA$`sub-region`=="Southern Asia","Consumer prices ( avg annual avg. % growth 5yrs)"] <- con_south_as
+DA.NOTCA[DA.NOTCA$`sub-region`=="Western Asia","Consumer prices ( avg annual avg. % growth 5yrs)"] <- con_wes_as
+```
+
+
+```{r}
+ggplot(DA.NOTCA,aes(x=`Consumer prices ( avg annual avg. % growth 5yrs)`,fill=`sub-region`)) +
+  facet_wrap(`sub-region` ~ ., nrow=4) + geom_density() +
+  theme(legend.position = "none")
 
 ```
 
 
 
 
-
-
-
-
+```{r}
+plot(density(con_eas_as))
+plot(density(con_soe_as))
+plot(density(con_south_as))
+plot(density(con_wes_as))
+```
 
 
 
