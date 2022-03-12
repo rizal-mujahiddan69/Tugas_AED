@@ -1,0 +1,219 @@
+---
+title: "Feature Transformation"
+author: "Perisai Zidane Hanapi"
+date: "2/21/2022"
+output:
+  html_document:
+    df_print: paged
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+df <- ggplot2::midwest
+head(df)
+```
+
+### Right-Skewed
+Data yang mengumpul di kanan dan menjulur ke kiri dapat dinormalkan/disimetriskan menggunakan pangkat negatif atau lambda = 0 (transformasi log).
+
+```{r}
+var1 <- df$percollege
+hist(var1, breaks = 30, border = "white", col = "skyblue", freq = F)
+lines(density(var1, bw = 1.5), lwd = 2)
+```
+
+```{r}
+ks.test(var1, "pnorm", mean = mean(var1), sd = sd(var1))
+```
+
+```{r}
+library(rcompanion)
+transformTukey(var1, returnLambda = F)
+```
+
+Tukey: Y* = Y^lambda
+
+```{r}
+var1.tuk <- transformTukey(var1)  # sama dengan var1.tuk <- var1^lambda
+```
+
+```{r}
+library(MASS)
+bc <- boxcox(var1 ~ 1)
+```
+
+```{r}
+bc$x[which.max(bc$y)]  # -0.5454545
+```
+
+1/sqrt(var1)
+```{r}
+lambda <- -.55
+var1.bc <- (var1^lambda - 1)/lambda
+```
+
+```{r}
+par(mfrow = c(3, 1))
+plot(density(var1, bw = 1.5), type = "l")
+plot(density(var1.tuk, bw = 1.5), type = "l", col = "blue")
+plot(density(var1.bc, bw = 1.5), type = "l", col = "red")
+```
+
+```{r}
+par(mfrow = c(1, 1))
+plot(density(var1, bw = 1.5), type = "l", col = "black", lwd = 2,
+     xlim = c(-5, 50), ylim = c(0, .3), main = "var1 (midwest$percollege)")
+abline(v = mean(var1), col = "black", lty = "dotted")
+
+lines(density(var1.tuk, bw = 1.5), col = "blue", lwd = 2)
+abline(v = mean(var1.tuk), col = "blue", lty = "dotted")
+
+lines(density(var1.bc, bw = 1.5), col = "red", lwd = 2)
+abline(v = mean(var1.bc), col = "red", lty = "dotted")
+
+legend("topright", legend = c("Original", "Tukey", "Box-Cox"),
+       lty = 1, col = c("black", "blue", "red"))
+```
+
+Peluang terima H0 KS-Test terhadap sebaran normal cenderung lebih tinggi pada peubah hasil transformasi Tukey dan Box-Cox. Data hasil transformasi menjadi lebih simetris.
+
+```{r}
+ks.test(var1, "pnorm", mean = mean(var1), sd = sd(var1))
+ks.test(var1.tuk, "pnorm", mean = mean(var1.tuk), sd = sd(var1.tuk))
+ks.test(var1.bc, "pnorm", mean = mean(var1.bc), sd = sd(var1.bc))
+```
+
+### Left-Skewed
+Data yang mengumpul di kanan dan menjulur ke kiri dapat dinormalkan/disimetriskan menggunakan pangkat positif.
+
+```{r}
+var2 <- df$percwhite
+hist(var2)
+```
+
+```{r}
+var2.tuk <- transformTukey(var2)
+
+bc2 <- boxcox(var2 ~ 1, seq(10, 20, .01))
+lambda2 <- bc2$x[which.max(bc2$y)]; lambda2
+var2.bc <- (var2^lambda2 - 1)/lambda2
+```
+
+Peluang terima H0 KS-Test terhadap sebaran normal cenderung lebih tinggi pada peubah hasil transformasi Tukey dan Box-Cox. Data hasil transformasi menjadi lebih simetris.
+
+```{r}
+par(mfrow = c(3, 1))
+hist(var2, xlim = c(0, 200))
+hist(var2.tuk, xlim = c(0, 1e+20))
+hist(var2.bc, xlim = c(0, 1e+31))
+```
+
+```{r}
+ks.test(var2, "pnorm", mean = mean(var2), sd = sd(var2))
+ks.test(var2.tuk, "pnorm", mean = mean(var2.tuk), sd = sd(var2.tuk))
+ks.test(var2.bc, "pnorm", mean = mean(var2.bc), sd = sd(var2.bc))
+```
+
+### Kelemahan Transformasi Tukey (di R)
+
+```{r}
+length(var1)  # 437
+var3 <- rep(var1, 20)
+length(var3)
+```
+
+Bergantung pada fungsi shapiro.test() yang hanya dapat menerima 3 <= n <= 5000, sehingga pada data besar menjadi sulit digunakan.
+
+```{r}
+try(transformTukey(var3))
+```
+
+## Box-Cox Implementation on Linear Regression Residuals
+
+Transformasi peubah Y untuk mengubah sebaran sisaan menjadi normal. Akan sangat berguna pada regresi OLS parametrik yang mengasumsikan normalitas sebaran residu.
+
+```{r}
+df2 <- ggplot2::txhousing
+fit1 <- lm(volume ~ sales + listings + inventory, data = df2)
+hist(fit1$residuals)
+```
+
+```{r}
+coef(fit1)
+```
+
+```{r}
+ks.test(fit1$residuals, "pnorm", mean = 0, sd = sd(fit1$residuals))
+```
+volume = -15423381 + 277234 x sales - 12627 x listings + 1025870 x inventory
+
+```{r}
+bc3 <- boxcox(fit1)
+bc3$x[which.max(bc3$y)]
+lambda3 <- bc3$x[which.max(bc3$y)] # 0.67
+```
+
+```{r}
+fit2 <- lm(((volume)^lambda3 - 1)/lambda3 ~ sales + listings + inventory,
+           data = df2)
+hist(fit2$residuals)
+```
+
+```{r}
+ks.test(fit1$residuals, "pnorm", mean = 0, sd = sd(fit1$residuals))
+ks.test(fit2$residuals, "pnorm", mean = 0, sd = sd(fit2$residuals))
+```
+
+```{r}
+set.seed(42)
+kSamples::ad.test(fit1$residuals,
+                  rnorm(n = length(fit1$residuals), sd = sd(fit1$residuals)))
+
+set.seed(42)
+kSamples::ad.test(fit2$residuals,
+                  rnorm(n = length(fit2$residuals), sd = sd(fit2$residuals)))
+```
+
+Tidak selamanya hasil transformasi akan berhasil, namun setidaknya kita dapat mendekati sebaran normal dan metode ini dapat digunakan di lain kasus.
+
+## FitdistrPlus
+
+Dapat digunakan untuk mencari parameter-parameter terbaik dari suatu fungsi sebaran.
+
+```{r}
+var3 <- df$popdensity
+#plot(density(var3, bw = 10), type = "l")
+hist(var3)
+```
+
+```{r}
+library(fitdistrplus)
+fdLogis <- fitdist(var3, "logis")
+fdLogis$estimate
+```
+
+```{r}
+ks.test(var3, "plogis", fdLogis$estimate[1], fdLogis$estimate[2])
+```
+
+```{r}
+fdF <- fitdist(var3, "f", start = list(df1 = 10, df2 = 10), method = 'mse')
+fdF$estimate
+```
+
+```{r}
+ks.test(var3, "pf", fdF$estimate[1], fdF$estimate[2])
+```
+
+```{r}
+fdLogNorm <- fitdist(var3, "lnorm")
+fdLogNorm$estimate
+```
+
+```{r}
+ks.test(var3, "plnorm", fdLogNorm$estimate[1], fdLogNorm$estimate[2])
+```

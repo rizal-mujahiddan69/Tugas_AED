@@ -1,0 +1,493 @@
+---
+title: "Modul Praktikum 3"
+author: "Perisai Zidane Hanapi"
+date: "2/7/2022"
+output: word_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# QQ-Plot
+QQ Plot/Plot kuantil merupakan grafik yang membandingkan antara nilai-nilai kuantil dari sebaran suatu data terhadap kuantil-kuantil milik sebaran lain. Jika kedua sebaran berbentuk sama/hampir sama, maka tiap nilai amatannya akan berada di suatu garis lurus. Plot ini dapat digunakan untuk mencari tahu sebaran teoretis yang paling mendekati sebaran suatu data secara visual.
+
+Pada sesi ini kita akan menggunakan data ggplot2::midwest$percollege (persentase penduduk yang berpendidikan )
+
+```{r}
+library(ggplot2)
+df <- as.data.frame(midwest)
+var1 <- df$percollege
+str(var1)
+```
+
+Berikut adalah histogram dan plot densitas bagi var1 (plot densitas akan dipelajari lebih lanjut di minggu ke-4). Menggunakan QQ Plot, kita akan berusaha untuk mencari sebaran teoretis (normal, exponential, chi-square, etc.) yang paling mendekati sebaran kepekatan data yang kita miliki.
+
+```{r, echo = F}
+hist(var1, breaks = 20, freq = F, border = "white", col = "skyblue",
+     main = "College Educated Population\nin Each Midwest County (2000)",
+     xlab = "var1 (% of population)")
+lines(density(var1, bw = 1.5), lwd = 4)
+legend("topright", legend = c("Histogram", "Dugaan Sebaran Kepekatan Data"),
+       pch = c(15, NA), lty = c(NA, 1), lwd = c(NA, 2), pt.cex = c(1, NA),
+       col = c("skyblue", "black"), bty = "n", cex = .75)
+```
+
+## Base (qqplot)
+
+qqplot(x, y, plot.it = TRUE,
+       xlab = deparse1(substitute(x)),
+       ylab = deparse1(substitute(y)), ...)
+
+x: The first sample for qqplot.
+y: The second or only data sample.
+
+qqline(y, datax = FALSE, distribution = qnorm,
+       probs = c(0.25, 0.75), qtype = 7, ...)
+
+```{r}
+# Normal
+set.seed(42)
+qqnorm(var1, cex = .5)
+set.seed(42)
+qqline(var1, distribution = qnorm, col = "red", lty = "dashed", lwd = .1)
+```
+
+```{r}
+# Normal
+set.seed(42)
+qqplot(rnorm(n = length(var1), mean = mean(var1), sd = sd(var1)), var1)
+set.seed(42)
+qqline(distribution = function(p) qnorm(p, mean = mean(var1), sd = sd(var1)),
+       var1)
+```
+
+```{r, echo = F}
+hist(var1, breaks = 20, freq = F, xlim = c(0, 50), border = "white",
+     col = "skyblue", main = "var1 vs normal")
+curve(dnorm(x, mean = mean(var1), sd = sd(var1)), from = 0, to = 50, add = T,
+      lwd = 4)
+```
+
+X ~ Lognormal -> log(X) ~ Normal
+
+```{r}
+# Lognormal
+set.seed(42)
+qqplot(rlnorm(n = length(var1), meanlog = mean(log(var1)),
+              sdlog = sd(log(var1))), var1)
+set.seed(42)
+qqline(distribution = function(p) qlnorm(p, meanlog = mean(log(var1)),
+                                         sdlog = sd(log(var1))), var1,
+       col = "red")
+```
+
+```{r, echo = F}
+hist(var1, breaks = 20, freq = F, xlim = c(0, 50), border = "white",
+     col = "skyblue", main = "var1 vs lognormal")
+curve(dlnorm(x, meanlog = mean(log(var1)), sdlog = sd(log(var1))),
+      from = 0, to = 50, add = T, lwd = 4)
+```
+
+```{r, echo = F}
+hist(log(var1), breaks = 20, freq = F, border = "white", xlim = c(1.8, 4),
+     col = "lightpink", main = "log(var1) vs normal")
+curve(dnorm(x, mean = mean(log(var1)), sd = sd(log(var1))), from = 1.8, to = 4,
+      add = T, lwd = 4)
+```
+
+```{r}
+# Chi-Squared
+qqplot(rchisq(n = length(var1), df = mean(var1)), var1)
+qqline(distribution = function(p) qchisq(p, df = mean(var1)), var1, col = "red")
+```
+
+```{r, echo = F}
+hist(var1, breaks = 20, freq = F, xlim = c(0, 50), border = "white",
+     col = "skyblue", main = "var1 vs Chi-sq")
+curve(dchisq(x, df = mean(var1)), from = 0, to = 50, add = T, lwd = 4)
+```
+
+```{r}
+# Exponential
+set.seed(42)
+qqplot(rexp(n = length(var1), rate = 1/mean(var1)), var1)
+set.seed(42)
+qqline(distribution = function(p) qexp(p, rate = 1/mean(var1)), var1, col = "red")
+```
+
+```{r, echo = F}
+hist(var1, breaks = 20, freq = F, xlim = c(0, 50), border = "white",
+     col = "skyblue", main = "var1 vs Exponential")
+curve(dexp(x, rate = 1/mean(var1)), from = 0, to = 50, add = T, lwd = 4)
+```
+
+## GGPlot (stat_qq)
+
+stat_qq(
+  mapping = NULL,
+  data = NULL,
+  geom = "point",
+  position = "identity",
+  ...,
+  distribution = stats::qnorm,
+  dparams = list(),
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = TRUE
+)
+
+stat_qq_line(
+  mapping = NULL,
+  data = NULL,
+  geom = "path",
+  position = "identity",
+  ...,
+  distribution = stats::qnorm,
+  dparams = list(),
+  line.p = c(0.25, 0.75),
+  fullrange = FALSE,
+  na.rm = FALSE,
+  show.legend = NA,
+  inherit.aes = TRUE
+)
+
+```{r, message=FALSE}
+library(ggplot2)
+gg.percol <- ggplot(data = df, mapping = aes(sample = percollege))
+```
+
+```{r}
+# Normal
+gg.percol + stat_qq() + stat_qq_line()
+```
+
+```{r}
+# Lognormal
+param.lnorm <- list(meanlog = mean(log(var1)), sdlog = sd(log(var1)))
+gg.percol + stat_qq(distribution = qlnorm, dparams = param.lnorm) +
+    stat_qq_line(distribution = qlnorm, dparams = param.lnorm)
+```
+
+```{r}
+# Chi-Squared
+param.chisq <- list(df = mean(var1))
+gg.percol + stat_qq(distribution = qchisq, dparams = param.chisq) +
+    stat_qq_line(distribution = qchisq, dparams = param.chisq, color = "red") +
+    theme_classic()
+```
+
+```{r}
+# Exponential
+param.exp <- list(rate = 1/mean(var1))
+gg.percol + stat_qq(distribution = qexp, dparams = param.exp) +
+    stat_qq_line(distribution = qexp, dparams = param.exp, color = "red") +
+    theme_classic() + xlab("Theoretical Quantiles") + ylab("Sample Quantiles")
+```
+
+## CAR (qqPlot)
+
+qqPlot(x, distribution="norm", groups, layout,
+    ylim=range(x, na.rm=TRUE), ylab=deparse(substitute(x)),
+    xlab=paste(distribution, "quantiles"), glab=deparse(substitute(groups)),
+    main=NULL, las=par("las"),
+    envelope=TRUE, col=carPalette()[1], col.lines=carPalette()[2],
+    lwd=2, pch=1, cex=par("cex"),
+    line=c("quartiles", "robust", "none"), id=TRUE, grid=TRUE, ...)
+
+```{r, warning=FALSE}
+library(car)
+```
+
+```{r}
+# Normal
+qqPlot(var1, distribution = "norm", mean = mean(var1), sd = sd(var1))
+```
+
+```{r}
+# Lognormal
+qqPlot(var1, distribution = "lnorm", meanlog = mean(log(var1)),
+       sdlog = sd(log(var1)))
+```
+
+```{r}
+# Chi-Squared
+qqPlot(var1, distribution = "chisq", df = mean(var1))
+```
+
+```{r}
+# Exponential
+qqPlot(var1, distribution = "exp", rate = 1/mean(var1))
+```
+
+# Formal Sample Distribution Test
+Kolmogorov-Smirnov Test     : Numerik
+Anderson-Darling Test       : Numerik
+Chi-Squared Test            : Kategorik
+
+In a nutshell:
+H0: Sebaran 1 == Sebaran 2
+H1: Sebaran 1 != Sebaran 2
+
+p-value > alpha, Terima H0
+p-value < alpha, Tolak H0
+
+## Kolmogorov-Smirnov Test
+
+ks.test(x, y, ...,
+        alternative = c("two.sided", "less", "greater"),
+        exact = NULL)
+
+```{r}
+# Normal
+set.seed(42)
+ks.test(var1, "pnorm", mean = mean(var1), sd = sd(var1))
+```
+
+```{r}
+# Lognormal
+set.seed(42)
+ks.test(var1, "plnorm", meanlog = mean(log(var1)), sdlog = sd(log(var1)))
+```
+
+```{r}
+# Chi-Squared
+set.seed(42)
+ks.test(var1, "pchisq", df = mean(var1))
+```
+
+```{r}
+# Exponential
+set.seed(42)
+ks.test(log(var1), "pexp", rate = 1/mean(var1))
+```
+
+## Anderson-Darling Test
+
+ad.test(..., data = NULL, method = c("asymptotic", "simulated", "exact"),
+	dist = FALSE, Nsim = 10000)
+
+```{r, warning = F}
+library(kSamples)
+```
+
+```{r, warning = F}
+# Normal
+set.seed(42)
+ad.test(var1, rnorm(n = length(var1), mean = mean(var1), sd = sd(var1)))
+```
+
+```{r, warning = F}
+# Lognormal
+set.seed(42)
+ad.test(var1, rlnorm(n = length(var1), meanlog = mean(log(var1)),
+                     sdlog = sd(log(var1))))
+```
+
+```{r, warning = F}
+# Chi-Squared
+set.seed(42)
+ad.test(var1, rchisq(n = length(var1), df = mean(var1)))
+```
+
+```{r, warning = F}
+# Exponential
+set.seed(42)
+ad.test(log(var1), rexp(n = length(var1), rate = 1/mean(var1)))
+```
+
+## Chi-Square Test
+
+chisq.test(x, y = NULL, correct = TRUE,
+           p = rep(1/length(x), length(x)), rescale.p = FALSE,
+           simulate.p.value = FALSE, B = 2000)
+
+```{r}
+var2 <- df$state
+str(var2)
+```
+
+O : Data observasi yang ada di dataset
+E : Data ekspektasi andaikan mengikuti suatu sebaran teoretik tertentu
+
+```{r}
+Observed <- factor(var2)
+str(Observed)
+table(Observed)
+```
+
+```{r}
+# Theoretical Uniform
+set.seed(42)
+Expected <- sample(levels(Observed), size = length(var2), replace = T)
+Expected <- factor(Expected)
+str(Expected)
+table(Expected)
+```
+
+sample(x, size, replace = FALSE, prob = NULL)
+
+parameter prob dapat diisi oleh vektor berisi peluang muncul suatu kategori, sehingga nanti dapat diubah menjadi bentuk sebaran teoretik yang diinginkan.
+
+```{r}
+chisq.test(Observed, Expected)
+```
+
+p-val > alpha -> sebaran df$state adalah uniform
+
+#PP-Plot
+
+Deteksi sebaran dari suatu data secara eksploratif selain menggunakan QQ plot juga dapat menggunakan PP plot (Probability-Probability plot). Plot ini hampir sama dengan QQ plot yaitu berupa plot pencar yang digunakan untuk melihat kecocokan dari 2 dataset atau dataset terhadap sebaran tertentu. Namun pada PP plot, yang dibandingkan adalah peluang sebaran komulatif. Kedua dataset dikatakan identik atau suatu dataset dikatakan mengikuti sebaran tertentu jika titik-titik mendekati garis lurus diagonal y=x dimana dimulai dari titik (0,0) hingga (1,1). PP plot dalam mendeteksi sebaran dari suatu data menggunakan R dapat dibangun menggunakan langkah-langkah berikut:
+
+1. Mengurutkan data dari yang terkecil hingga terbesar
+2. Memeriksa data duplikat. Jika terdapat data duplikat, perlu dilakukan manajemen data untuk mengambil data unik
+3. menghitung peluang kumulatif dari masing-masing data unik sebagai peluang kumulatif dari data empiris
+4. menghitung peluang kumulatif dari data unif berdasarkan sebaran teoritis tertentu
+5. plot antara peluang kumulatif data empiris dengan peluang kumulatif sebara teoritis
+
+Simulasi deteksi sebaran menggunakan PP plotdalam R dapat mengikuti syntax berikut:
+```{r}
+#Membangktikan data (ex: menyebar normal)
+set.seed(1)
+x<-rnorm(100,mean=2, sd=1)
+x<-sort(x) #mengurutkan data empiris dari yang terkecil
+i<-seq(1:100)
+df<-data.frame(i,x)
+m<-mean(x)
+s<-sd(x)
+n<-length(x)
+head(df, 10)
+```
+
+```{r}
+#Memeriksa data duplikat
+library(dplyr)
+uniqe_x<-distinct(df,x)
+dim(uniqe_x) #semua data unik, banyak data unik sama dengan banyak data yang dibangkitkan
+```
+
+```{r}
+#Peluang kumulatif data empiris
+cdf_x<-0
+sum=0
+for(i in 1:n){
+  sum=sum+(1/n)
+  cdf_x[i]<-sum
+}
+df$cdf_x<-cdf_x
+head(df, 10)
+```
+
+```{r}
+#Peluang kumulatif sebaran teoritis (Normal)
+cdf_normal<-pnorm(df$x, mean=m, sd=s)
+#atau dapat menggunakan sebaran normal baku
+z_score<-(df$x-m)/s
+cdf_norm<-pnorm(z_score, mean=0, sd=1)
+
+df$cdf_norm<-cdf_norm
+head(df, 10)
+```
+
+```{r}
+library(ggplot2)
+histogram<-ggplot(df) +
+  geom_histogram(aes(x = x),fill="darkred",col="darkred") +
+  ggtitle("Histogram data empiris") +
+  ylab("Frekuensi") +
+  xlab("x") + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+pp_norm<-ggplot(df) +
+  geom_point(aes(x = cdf_x,y = cdf_norm),
+             color="steelblue",size=2) +
+  ggtitle("PP-plot Terhadap Sebaran Normal") +
+  ylab("Peluang kumulatif sebaran normal") +
+  xlab("Peluang kumulatif data empiris") + 
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme_linedraw()+
+  geom_abline(intercept = 0, slope = 1, col="darkred", lwd=1)
+
+par(mfrow=c(1,2))
+histogram
+pp_norm
+```
+
+
+```{r}
+#Peluang kumulatif sebaran teoritis (Chi-square)
+cdf_chisq<-pchisq(df$x, df=m)
+df$cdf_chisq<-cdf_chisq
+head(df,10)
+```
+
+```{r}
+pp_chisq<-ggplot(df) +
+  geom_point(aes(x = cdf_x,y = cdf_chisq),
+             color="steelblue",size=2) +
+  ggtitle("PP-plot Terhadap Sebaran Chi-square") +
+  ylab("Peluang kumulatif sebaran chi-square") +
+  xlab("Peluang kumulatif data empiris") + 
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme_linedraw()+
+  geom_abline(intercept = 0, slope = 1, col="darkred", lwd=1)
+
+par(mfrow=c(1,2))
+histogram
+pp_chisq
+```
+
+```{r}
+#Peluang kumulatif sebaran teoritis (Eksponensial)
+cdf_exp<-pexp(df$x, rate=m)
+df$cdf_exp<-cdf_exp
+head(df,10)
+```
+
+```{r}
+pp_exp<-ggplot(df) +
+  geom_point(aes(x = cdf_x,y = cdf_exp),
+             color="steelblue",size=2) +
+  ggtitle("PP-plot Terhadap Sebaran Exponensial") +
+  ylab("Peluang kumulatif sebaran exponensial") +
+  xlab("Peluang kumulatif data empiris") + 
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme_linedraw()+
+  geom_abline(intercept = 0, slope = 1, col="darkred", lwd=1)
+
+par(mfrow=c(1,2))
+histogram
+pp_exp
+```
+
+```{r}
+#Peluang kumulatif sebaran teoritis (Gamma)
+cdf_gamma<-pgamma(df$x, shape = 1, rate = 1) #alfa=1, beta=1
+df$cdf_gamma<-cdf_gamma
+head(df,10)
+
+```
+
+```{r}
+pp_gamma<-ggplot(df) +
+  geom_point(aes(x = cdf_x,y = cdf_gamma),
+             color="steelblue",size=2) +
+  ggtitle("PP-plot Terhadap Sebaran Gamma") +
+  ylab("Peluang kumulatif sebaran gamma") +
+  xlab("Peluang kumulatif data empiris") + 
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme_linedraw()+
+  geom_abline(intercept = 0, slope = 1, col="darkred", lwd=1)
+
+par(mfrow=c(1,2))
+histogram
+pp_gamma
+```
+
+```{r}
+par(mfrow=c(2,2))
+pp_norm
+pp_chisq
+pp_exp
+pp_gamma
+```
+

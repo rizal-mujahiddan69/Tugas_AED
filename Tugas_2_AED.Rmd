@@ -52,6 +52,10 @@ library(multcompView)
 library(rcompanion)
 library(car)
 library(AID)
+library(ggridges)
+
+
+
 
 #####Input data#####
 Data2 <- read_xlsx("Data Tugas 2.xlsx", sheet = "data", skip=1)
@@ -60,19 +64,84 @@ colnames(country)[2] <- colnames(Data2)[1]
 Dc<-merge(country, Data2, by="Country");DC<-Dc[,-c(3:5,8:11)]
 DA <- DC%>%filter(region=="Asia");DC.Asia<-DA[,-3]
 
+B<- DA$`GDP per cap. (USD)`
+C<- DA$`Consumer prices ( avg annual avg. % growth 5yrs)`
+
+# untuk transformasi
+C <- C+1
+
 head(DA)
 ```
+```{r}
+ggplot(DC.Asia, mapping=aes(x=`GDP per cap. (USD)`, y=`sub-region`, 
+        fill=`sub-region`))+geom_density_ridges(alpha=0.83)+
+        xlim(0, max(DC.Asia$`GDP per cap. (USD)`))+theme_minimal()+
+        labs(title="Sebaran PDB per Kapita di Benua Asia\n",
+        y="Sub-Benua\n", x="\nPDB per Kapita (USD)")+
+        scale_fill_brewer(palette = "PuOr")+
+        theme_ridges(center_axis_labels = T, grid=T)+
+        theme(legend.position = "none")
+```
+```{r}
+Dabat<-DC.Asia %>% mutate(baru=`Consumer prices ( avg annual avg. % growth 5yrs)`+ 
+        min(DC.Asia$`Consumer prices ( avg annual avg. % growth 5yrs)`)+2)
+
+ggplot(Dabat, mapping=aes(x=baru, y=`sub-region`, fill=`sub-region`))+
+        geom_density_ridges(alpha=0.83)+theme_minimal()+
+        labs(title="Sebaran Pertumbuhan Harga Konsumen di Benua Asia", 
+        subtitle=" Rataan 5 Tahun Terakhir", x="\n Pertumbuhan Harga Konsumen (%)",
+        y="Sub-Benua\n")+scale_fill_brewer(palette = "PuOr")+
+        theme_ridges(center_axis_labels = T, grid=T)+
+        theme(legend.position = "none")
+```
+```{r}
+gdp<-DC.Asia$`GDP (USDbn)`
+bc<- MASS::boxcox(gdp ~ 1)
+lambda<-bc$x[which.max(bc$y)]
+gdp.bc <- ((gdp^lambda-1)/lambda)
+GAB <- cbind(DC.Asia,gdp.bc)
+ggplot(GAB, mapping=aes(x=gdp.bc, y=`sub-region`, fill=`sub-region`))+
+        geom_density_ridges(alpha=0.83)+scale_fill_brewer(palette="PuOr")+
+        xlim(0, max(GAB$gdp.bc))+labs(y="Sub-Benua\n", x="\nPDB-Boxcox (USD)", 
+        title="Sebaran PDB per Kapita di Benua Asia", 
+        subtitle="Post Boxcox Transformation")+
+        theme_ridges(center_axis_labels = T)+
+        theme(legend.position = "none")
+```
+
+
+
+```{r}
+gdp.tk<-transformTukey(gdp, returnLambda = F)
+Gab<-cbind(DC.Asia, gdp.tk)
+ggplot(Gab, mapping=aes(x=gdp.tk, y=`sub-region`, fill=`sub-region`))+
+  geom_density_ridges(alpha=0.83)+scale_fill_brewer(palette="PuOr")+
+  xlim(0, max(Gab$gdp.tk))+labs(y="Sub-Benua\n", x="\nPDB-Tukey (USD)", 
+  title="Sebaran PDB per Kapita di Benua Asia", 
+  subtitle="Post Tukey Transformation")+theme_ridges(center_axis_labels = T)+
+  theme(legend.position = "none")
+```
+
+
+
+
+
+
 ```{r}
 print(paste(min(DA$`GDP per cap. (USD)`),max(DA$`GDP per cap. (USD)`)))
 gdp.per.cap <- powerTransform(DA$`GDP per cap. (USD)`)
 lambdaku <- gdp.per.cap$lambda
-
 DA$`Boxcox GDP per cap. (USD)` <- (DA$`GDP per cap. (USD)`^lambdaku - 1)/lambdaku
 
 ```                                    
                                     
 ```{r}
 ggplot(DA,aes(x=`GDP per cap. (USD)`)) + geom_density()
+
+
+testku <- shapiro.test(DA$`GDP per cap. (USD)`)
+print(testku)
+
 
 ggplot(DA,aes(x=`Boxcox GDP per cap. (USD)`)) + geom_density()
 
@@ -82,6 +151,62 @@ ggplot(DA,aes(x=`GDP per cap. (USD)`)) +
 ggplot(DA,aes(y=`GDP per cap. (USD)`,x=reorder(`sub-region`,`GDP per cap. (USD)`),
               fill=`sub-region`)) + geom_boxplot() 
 ```
+
+#  Uji Formal Kolmogorov-Smirnov Test consumer
+## Normal
+```{r}
+set.seed(42)
+ks.test(B, "pnorm", mean = mean(B), sd = sd(B))
+```
+
+## Chi-Squared
+
+```{r}
+set.seed(42)
+ks.test(B, "pchisq", df = mean(B))
+```
+
+## Exponential
+```{r}
+set.seed(42)
+ks.test(log(B), "pexp", rate = 1/mean(B))
+
+```
+
+## Lognormal
+```{r}
+set.seed(42)
+ks.test(B, "plnorm", meanlog = mean(log(B)), sdlog = sd(log(B)))
+```
+#  QQplot
+## QQplot sebaran Normal
+```{r}
+qqPlot(C, distribution = "norm", mean = mean(C), sd = sd(C),
+       main= "QQ-plot Terhadap Sebaran normal",
+       ylab= "GDP per cap. (USD)")
+```
+## QQplot sebaran Chi-Squared
+```{r}
+qqPlot(C, distribution = "chisq", df = mean(C),
+       main= "QQ-plot Terhadap Sebaran Chi-Squared",
+       ylab= "GDP per cap. (USD)")
+```
+## QQplot sebaran Exponential
+```{r}
+qqPlot(C, distribution = "exp", rate = 1/mean(C),
+       main= "QQ-plot Terhadap Sebaran eksponensial",
+       ylab= "GDP per cap. (USD)")
+```
+## QQplot sebaran Lognormal
+
+```{r}
+qqPlot(C, distribution = "lnorm", meanlog = mean(log(C)),
+       sdlog = sd(log(C)),
+       main= "QQ-plot Terhadap Sebaran Lognormal",
+       ylab= "GDP per cap. (USD)")
+```
+
+
 ```{r}
 
 batas_GDP <- min(DA$`GDP per cap. (USD)`)
@@ -94,6 +219,11 @@ x_gdp <- DA$`GDP per cap. (USD)`
 gdp.bc <- bestNormalize(x_gdp)
 print(gdp.bc)
 gdpnorm <- gdp.bc$x.t
+
+testku <- shapiro.test(gdpnorm)
+print(testku)
+
+
 plot(density(gdpnorm))
 ```
 
@@ -130,24 +260,33 @@ is.numeric(GDP_sub_region_western)
 library(MASS)
 GDP_sub_region_western_bc <- MASS::boxcox(GDP_sub_region_western ~ 1)
 lambda <- GDP_sub_region_western_bc$x[which.max(GDP_sub_region_western_bc$y)]
+
+print(paste("Lambda ",lambda))
 GDP_sub_region_western <- (GDP_sub_region_western^lambda - 1)/lambda
+
 ```
 
 # GDP_sub_region_southern<- transformTukey(GDP_sub_region_southern,plotit=FALSE)
 ```{r}
 GDP_sub_region_southern_bc <- MASS::boxcox(GDP_sub_region_southern ~ 1)
 lambda <- GDP_sub_region_southern_bc$x[which.max(GDP_sub_region_southern_bc$y)]
+
+print(paste("Lambda ",lambda))
 GDP_sub_region_southern <- (GDP_sub_region_southern^lambda - 1)/lambda
 ```
 
 ```{r}
 GDP_sub_region_eastern_bc <- MASS::boxcox(GDP_sub_region_eastern ~ 1)
 lambda <- GDP_sub_region_eastern_bc$x[which.max(GDP_sub_region_eastern_bc$y)]
+
+print(paste("Lambda ",lambda))
 GDP_sub_region_eastern <- (GDP_sub_region_eastern^lambda - 1)/lambda
 ```
 ```{r}
 GDP_sub_region_south_eastern_bc <- MASS::boxcox(GDP_sub_region_south_eastern ~ 1)
 lambda <- GDP_sub_region_south_eastern_bc$x[which.max(GDP_sub_region_south_eastern_bc$y)]
+
+print(paste("Lambda ",lambda))
 GDP_sub_region_south_eastern <- (GDP_sub_region_south_eastern^lambda - 1)/lambda
 ```
 
@@ -166,6 +305,14 @@ ggplot(DA.NOTCA,aes(x = `GDP per cap. (USD)`,fill= `sub-region`)) +
 
 """# lanjut"""
 ```{r}
+
+print(shapiro.test(DA[DA["sub-region"]=="Southern Asia","GDP per cap. (USD)"]))
+print(shapiro.test(DA[DA["sub-region"]=="Western Asia","GDP per cap. (USD)"]))
+print(shapiro.test(DA[DA["sub-region"]=="Eastern Asia","GDP per cap. (USD)"]))
+print(shapiro.test(DA[DA["sub-region"]=="South-eastern Asia","GDP per cap. (USD)"]))
+
+
+
 plot(density(DA[DA["sub-region"]=="Southern Asia","GDP per cap. (USD)"]),
      main="Southern Asia")
 plot(density(DA[DA["sub-region"]=="Western Asia","GDP per cap. (USD)"]),
@@ -199,6 +346,63 @@ ggplot(DA.NOTCA,aes(y=`Consumer prices ( avg annual avg. % growth 5yrs)`,
   geom_boxplot() 
 ```
 
+
+```{r}
+
+
+
+
+```
+
+
+#  Uji Formal Kolmogorov-Smirnov Test consumer
+## Normal
+```{r}
+set.seed(42)
+ks.test(C, "pnorm", mean = mean(C), sd = sd(C))
+```
+## Chi-Squared
+```{r}
+set.seed(42)
+ks.test(C, "pchisq", df = mean(C))
+```
+## Exponential
+```{r}
+set.seed(42)
+ks.test(log(C), "pexp", rate = 1/mean(C))
+```
+## Lognormal
+```{r}
+set.seed(42)
+ks.test(C, "plnorm", meanlog = mean(log(C)), sdlog = sd(log(C)))
+```
+## QQplot sebaran Normal
+```{r}
+qqPlot(C, distribution = "norm", mean = mean(C), sd = sd(C),
+       main= "QQ-plot Terhadap Sebaran normal",
+       ylab= "GDP per cap. (USD)")
+```
+## QQplot sebaran Chi-Squared
+```{r}
+qqPlot(C, distribution = "chisq", df = mean(C),
+       main= "QQ-plot Terhadap Sebaran Chi-Squared",
+       ylab= "GDP per cap. (USD)")
+```
+## QQplot sebaran Exponential
+```{r}
+qqPlot(C, distribution = "exp", rate = 1/mean(C),
+       main= "QQ-plot Terhadap Sebaran eksponensial",
+       ylab= "GDP per cap. (USD)")
+```
+## QQplot sebaran Lognormal
+```{r}
+qqPlot(C, distribution = "lnorm", meanlog = mean(log(C)),
+       sdlog = sd(log(C)),
+       main= "QQ-plot Terhadap Sebaran Lognormal",
+       ylab= "GDP per cap. (USD)")
+```
+
+
 ```{r}
 consum_T <- DA$`Consumer prices ( avg annual avg. % growth 5yrs)`
 
@@ -211,6 +415,8 @@ min(consum_T)
 
 consum_T_bc <- MASS::boxcox(consum_T ~ 1)
 lambda <- consum_T_bc$x[which.max(consum_T_bc$y)]
+
+print(paste("Lambda ",lambda))
 consum_T <- ((consum_T^lambda) - 1)/lambda
 print(lambda)
 
@@ -246,20 +452,24 @@ con_wes_as <- con_wes_as + 2
 
 con_eas_as_bc <- MASS::boxcox(con_eas_as ~ 1)
 lambda <- con_eas_as_bc$x[which.max(con_eas_as_bc$y)]
+print(paste("Lambda eastern",lambda))
 con_eas_as <- (con_eas_as^lambda - 1)/lambda
 
 
 con_soe_as_bc <- MASS::boxcox(con_soe_as ~ 1)
 lambda <- con_soe_as_bc$x[which.max(con_soe_as_bc$y)]
+print(paste("Lambda south eastern",lambda))
 con_soe_as <- (con_soe_as^lambda - 1)/lambda
 
 con_south_as_bc <- MASS::boxcox(con_south_as ~ 1)
 lambda <- con_south_as_bc$x[which.max(con_south_as_bc$y)]
+print(paste("Lambda southern",lambda))
 con_south_as <- (con_south_as^lambda - 1)/lambda
 
 
 con_wes_as_bc <- MASS::boxcox(con_wes_as ~ 1)
 lambda <- con_wes_as_bc$x[which.max(con_wes_as_bc$y)]
+print(paste("Lambda western",lambda))
 con_wes_as <- (con_wes_as^lambda - 1)/lambda
 
 ```
@@ -288,11 +498,15 @@ ggplot(DA.NOTCA,aes(y=`Consumer prices ( avg annual avg. % growth 5yrs)`,
 
 
 ```{r}
+
+print(shapiro.test(con_eas_as))
+print(shapiro.test(con_soe_as))
+print(shapiro.test(con_south_as))
+print(shapiro.test(con_wes_as))
+
+
 plot(density(con_eas_as))
 plot(density(con_soe_as))
 plot(density(con_south_as))
 plot(density(con_wes_as))
 ```
-
-
-

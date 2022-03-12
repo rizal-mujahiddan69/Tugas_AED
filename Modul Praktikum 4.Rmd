@@ -1,0 +1,256 @@
+---
+title: "Plot Densitas"
+author: "Perisai Zidane Hanapi"
+date: "2/14/2022"
+output:
+  word_document: default
+  pdf_document: default
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+<style>
+body {text-align: justify}
+</style>
+
+Plot densitas adalah kurva yang menggambarkan hubungan antara x dan y = f(x) dari suatu fungsi peluang. Pada suatu sebaran peluang teoretis, setiap nilai f(x) telah terdefinisi dengan jelas. Akan tetapi, pada suatu dataset asli, maka plot densitas hanya dapat diestimasi menggunakan metode-metode pendugaan densitas kernel. Baca lebih lanjut: [Pendugaan Kernel untuk Plot Densitas (RPubs Pak Bagus)](https://rpubs.com/bagusco/kerneldensity).
+
+## Base
+### Sebaran Teoretis
+
+```{r}
+curve(df(x, df1 = 50, df2 = 20), from = 0, to = 3.5,
+      lwd = 4, col = "blue")
+```
+
+```{r}
+myCol <- rgb(1, 0, 0, alpha = .6)
+scales::show_col(myCol)
+```
+
+```{r}
+polygon(curve(df(x, df1 = 50, df2 = 25), from = 0, to = 3.5),
+        col = myCol, border = myCol)
+```
+
+Gunakan set.seed() *setiap kali* ingin menggunakan r* (runif, rnorm, rchisq, dll.) supaya bisa dapat contoh yang mampu direproduksi kembali. Fungsi d* (dunif, dnorm, dchisq, dll.) tidak perlu set.seed() karena hasilnya akan selalu sama setiap waktu.
+
+```{r}
+set.seed(42)
+hist(rf(n = 100, df1 = 50, df2 = 20), breaks = 10)
+```
+
+```{r}
+set.seed(42)
+hist(rf(n = 1000, df1 = 50, df2 = 25), breaks = 20, freq = F,
+     border = "white", col = "grey70")
+```
+
+```{r}
+set.seed(42)
+hist(rf(n = 1000, df1 = 50, df2 = 25), breaks = 20, freq = F,
+     border = "white", col = "grey70")
+curve(df(x, df1 = 50, df2 = 20), from = 0, to = 3.5, add = T,
+      lwd = 4, col = "blue")
+```
+
+```{r}
+set.seed(42)
+hist(rf(n = 1000, df1 = 50, df2 = 25), breaks = 20, freq = F,
+     border = "white", col = "grey70")
+polygon(curve(df(x, df1 = 50, df2 = 25), add = T),
+        col = myCol, border = myCol)
+```
+
+
+### Sebaran Data Sampel
+
+```{r}
+vec1 <- ggplot2::midwest$percbelowpoverty
+hist(vec1)
+```
+
+```{r}
+plot(density(vec1, bw = .2), type = "l", col = "grey50", lwd = 2)
+lines(density(vec1, bw = 1), col = "blue", lwd = 2)
+lines(density(vec1, bw = 5), col = "red", lwd = 2)
+
+legend("topright", legend = c("bw = 0.2", "bw = 1", "bw =  5"),
+       lwd = 2, col = c("grey50", "blue", "red"))
+```
+
+```{r}
+hist(vec1, freq = F, breaks = 50, border = "white", col = rgb(.95, .95, 0, .6))
+
+lines(density(vec1, bw = .2), col = "grey50", lwd = 2)
+lines(density(vec1, bw = 1), col = "blue", lwd = 2)
+lines(density(vec1, bw = 5), col = "red", lwd = 2)
+
+legend("topright", legend = c("bw = 0.2", "bw =  1", "bw =  5"),
+       lwd = 2, col = c("grey50", "blue", "red"))
+```
+
+### Data Sampel vs Sebaran Teoretis
+
+```{r}
+myGrey <- rgb(.5, .5, .5, alpha = .6)
+scales::show_col(myGrey)
+```
+
+```{r}
+plot(density(vec1, bw = 2), col = myGrey, type = "l")
+polygon(density(vec1, bw = 2), col = myGrey, border = myGrey)
+
+curve(dchisq(x, df = mean(vec1)), from = 0, to = 50, add = T,
+      lwd = 2, col = "red")
+
+legend("topright", legend = c("Penduga Densitas Kernel", "Chi-Squared"),
+       col = c("black", "red"), lwd = 2)
+```
+
+Kita dapat mencoba uji formal untuk memastikan apakah antara kedua kurva adalah sebaran yang sama atau tidak.
+
+```{r}
+set.seed(42)
+kSamples::ad.test(vec1, rchisq(n = length(vec1), df = mean(vec1)))
+```
+
+Hasil uji Anderson-Darling: Terima H0 atau "kedua sampel berasal dari populasi yang sama" atau "kedua sebaran memiliki bentuk yang sama". Namun, p-value tidak jauh di atas 0.05, sehingga masih perlu dicari alternatif lain untuk dicari kepastian bentuk sebarannya.
+
+### Perbandingan Antar Metode Kernel
+
+Tidak ada banyak perbedaan pada setiap metode kernel, terutama ketika jumlah sampel besar.
+
+```{r}
+par(mfrow = c(2, 3))
+
+plot(density(vec1, kernel = "gaussian", bw = .2), lwd = 2, type = "l",
+     main = "gaussian")
+plot(density(vec1, kernel = "epanechnikov", bw = .2), lwd = 2, type = "l",
+     main = "epanechnikov")
+plot(density(vec1, kernel = "triangular", bw = .2), lwd = 2, type = "l",
+     main = "triangular")
+plot(density(vec1, kernel = "biweight", bw = .2), lwd = 2, type = "l",
+     main = "biweight")
+plot(density(vec1, kernel = "cosine", bw = .2), lwd = 2, type = "l",
+     main = "cosine")
+plot(density(vec1, kernel = "optcosine", bw = .2), lwd = 2, type = "l",
+     main = "optcosine")
+```
+
+```{r}
+par(mfrow = c(2, 3))
+
+plot(density(vec1, kernel = "gaussian"), lwd = 2, type = "l",
+     main = "gaussian")
+plot(density(vec1, kernel = "epanechnikov"), lwd = 2, type = "l",
+     main = "epanechnikov")
+plot(density(vec1, kernel = "triangular"), lwd = 2, type = "l",
+     main = "triangular")
+plot(density(vec1, kernel = "biweight"), lwd = 2, type = "l",
+     main = "biweight")
+plot(density(vec1, kernel = "cosine"), lwd = 2, type = "l",
+     main = "cosine")
+plot(density(vec1, kernel = "optcosine"), lwd = 2, type = "l",
+     main = "optcosine")
+```
+
+## GGPlot
+
+```{r}
+library(ggplot2)
+```
+
+### Sebaran Teoretis
+
+```{r}
+set.seed(42)
+ggExamp <- ggplot(mapping = aes(x = rbeta(n = 1000, shape1 = 2, shape2 = 5)))
+ggExamp + geom_density() + theme_classic()
+```
+
+Paramater adjust: jika semakin tinggi, maka semakin mulus namun semakin tidak merepresentasikan sebaran data aslinya. Begitupun sebaliknya.
+
+```{r}
+ggExamp + geom_density(adjust = .2) + theme_classic()
+```
+
+```{r}
+ggExamp + geom_density(adjust = 5) + theme_classic()
+```
+
+Histogram dapat digabungkan dengan kurva densitas.
+
+```{r}
+ggExamp + geom_histogram(aes(y = ..density..), bins = 20,
+                         fill = "white", col = "black") +
+    geom_density(adjust = 2, col = "darkorange", fill = "orange", alpha = .6) +
+    theme_classic()
+```
+
+
+
+### Sebaran Data Sampel
+
+```{r}
+ggExamp2 <- ggplot(data = midwest, mapping = aes(x = percbelowpoverty))
+ggExamp2 + geom_histogram(aes(y = ..density..), bins = 50,
+                          color = "grey35", fill = "white") +
+    geom_density(color = "orange", size = 1) +
+    theme_classic()
+```
+
+Modifikasi parameter "color =" pada aes() agar dapat dikelompokkan berdasarkan warna garis.
+
+```{r}
+ggGrouped1 <- ggplot(data = midwest, mapping = aes(x = percbelowpoverty,
+                                                  color = state))
+ggGrouped1 + geom_density(adjust = 2) + theme_classic()
+```
+
+Gunakan library RColorBrewer untuk menggunakan bermacam palet warna.
+
+```{r}
+library(RColorBrewer)
+par(cex = .6)
+display.brewer.all()
+```
+
+scale_color_manual() untuk menyesuaikan warna pada tiap garis kurva.
+
+```{r}
+ggGrouped1 + geom_density(adjust = 2) + theme_classic() +
+    scale_color_manual(values = brewer.pal(n = 5, "Reds"))
+```
+
+Modifikasi parameter fill pada aes() agar pengelompokan dapat didasarkan pada warna isi. parameter alpha pada geom_density() untuk mengatur transparansi warna isi pada kurva denstitas.
+
+```{r}
+ggGrouped2 <- ggplot(data = midwest, mapping = aes(x = percbelowpoverty,
+                                                   color = state, fill = state))
+ggGrouped2 + geom_density(adjust = 2, alpha = .1) + theme_classic()
+```
+
+scale_fill_manual() untuk menyesuaikan warna pada tiap isi kurva.
+
+```{r}
+ggGrouped2 + geom_density(adjust = 2, alpha = .1) + theme_classic() +
+    scale_color_manual(values = brewer.pal(n = 9, "Blues")[5:9]) +
+    scale_fill_manual(values = brewer.pal(n = 9, "Blues")[5:9])
+```
+
+### Data Sampel vs Sebaran Teoretis
+
+stat_function() dapat digunakan untuk memasukkan suatu sebaran teoritis terhadap suatu sebaran sampel.
+
+```{r}
+ggExamp3 <- ggplot(midwest, aes(x = percbelowpoverty))
+ggExamp3 + geom_density(size = 1, color = "blue", adjust = 2) +
+    theme_classic() +
+    stat_function(
+        fun = dnorm,
+        args = with(midwest, c(mean = mean(percbelowpoverty),
+                               sd = sd(percbelowpoverty))),
+        size = 1, color = "red"
+    )
+```

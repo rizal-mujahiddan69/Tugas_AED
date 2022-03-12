@@ -1,0 +1,169 @@
+---
+title: "Scatter Plot"
+author: "Perisai Zidane Hanapi"
+date: "2/21/2022"
+output:
+  word_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+df <- as.data.frame(ggplot2::midwest)
+df2 <- df[c("percwhite", "percblack", "percamerindan", "percasian",
+            "perchsd", "percollege", "percprof",
+            "percpovertyknown", "percbelowpoverty", "percchildbelowpovert")]
+head(df2)
+```
+
+## Correlation Matrix
+
+```{r}
+round(cor(df2), 2)
+```
+
+## Scatter Plot
+
+```{r}
+plot(df2)
+```
+
+### Individual Scatter Plot
+
+```{r}
+plot(df$perchsd, df$percbelowpoverty)
+```
+
+## Linear Model Fitting
+
+```{r}
+fit1 <- lm(percbelowpoverty ~ perchsd, data = df)
+coef(fit1)
+```
+
+Model yang diperoleh: Y = 50.79 - 0.52*X
+
+```{r lm}
+plot(df$perchsd, df$percbelowpoverty, cex = .5)
+abline(fit1, col = "red", lwd = 2)
+```
+
+```{r improved_lm}
+plot(df$perchsd, df$percbelowpoverty, cex = 1, pch = 16,
+     col = rgb(.8, 0, 0, alpha = .5))
+abline(fit1, col = "black", lwd = 2)
+```
+
+## Group By Categories
+
+```{r}
+myBlue <- rgb(0, 0, .8, .8)
+myRed <- rgb(.8, 0, 0, .8)
+col2 <- ifelse(df$inmetro == 1, myBlue, myRed)
+
+plot(df$perchsd, df$percbelowpoverty, col = col2, pch = 16, cex = 1.25)
+legend("topright", legend = c("In Metro Area", "Not In Metro Area"), pch = 16,
+       col = c("blue", "red"))
+```
+
+### More Than 2 Categories
+
+```{r}
+map <- data.frame(find = c("IL", "IN", "MI", "OH", "WI"),
+                  replace = c("darkred", "red", "purple", "blue", "darkblue"))
+col <- as.character(map[match(df$state, map$find), "replace"])
+
+data.frame(df$state, col)[c(100, 150, 200, 250, 300, 350, 400), ]
+```
+
+```{r}
+plot(df$perchsd, df$percbelowpoverty, col = col, pch = 16)
+legend("topright", legend = map$find, col = map$replace, pch = 16)
+```
+
+## 2D Scatter Plot Smoothing
+
+```{r}
+plot(df$perchsd, df$percbelowpoverty, pch = 16,
+     col = densCols(df$perchsd, df$percbelowpoverty, nbin = 3))
+plot(df$perchsd, df$percbelowpoverty, pch = 16,
+     col = densCols(df$perchsd, df$percbelowpoverty, nbin = 60))
+plot(df$perchsd, df$percbelowpoverty, pch = 16,
+     col = densCols(df$perchsd, df$percbelowpoverty))
+```
+
+```{r}
+smoothScatter(df$perchsd, df$percbelowpoverty, nbin = 30)
+smoothScatter(df$perchsd, df$percbelowpoverty, nbin = 30, col = NULL)
+smoothScatter(df$perchsd, df$percbelowpoverty, nbin = 50, col = NULL)
+smoothScatter(df$perchsd, df$percbelowpoverty, nbin = 200, col = NULL)
+smoothScatter(df$perchsd, df$percbelowpoverty, nbin = 50,
+              pch = 16, col = "red", nrpoints = 30)
+```
+
+```{r}
+library(hexbin)
+plot(hexbin(df$perchsd, df$percbelowpoverty))
+plot(hexbin(df$perchsd, df$percbelowpoverty),
+     colramp = colorRampPalette(c("white", "blue")))
+plot(hexbin(df$perchsd, df$percbelowpoverty),
+     colramp = colorRampPalette(c("white", "skyblue", "blue")))
+
+plot(hexbin(df$perchsd, df$percbelowpoverty),
+     colramp = colorRampPalette(c("pink", "red", "black")))
+```
+
+
+## Adding A 3rd Continuous Variable
+
+Menggunakan ukuran sebagai dimensi ke-3:
+
+```{r}
+plot(df$perchsd, df$percwhite, cex = df$percbelowpoverty/100*5)
+# X     -> % of Highschool Diploma
+# Y     -> % of White Population
+# Size  -> % of Population Below Poverty Line
+```
+
+Menggunakan transparansi sebagai dimensi ke-3:
+
+```{r}
+col2 <- rgb(1, 0, 0, df$percbelowpoverty/100*2)
+plot(df$perchsd, df$percwhite, col = col2, pch = 16)
+```
+
+Menggunakan transparansi dan ukuran sebagai dimensi ke-3:
+
+```{r}
+col2 <- rgb(1, 0, 0, df$percbelowpoverty/100*2)
+plot(df$perchsd, df$percwhite, col = col2, cex = df$percbelowpoverty/100*5,
+     pch = 16)
+```
+
+Menggunakan warna dan ukuran sebagai dimensi ke-3:
+
+```{r}
+col3 <- rgb(df$percbelowpoverty/100*2,
+            1 - df$percbelowpoverty/100*2,
+            1 - df$percbelowpoverty/100*2)
+plot(df$perchsd, df$percwhite, main = "Midwest Counties",
+     xlab = "% of High School Diploma", ylab = "% of White",
+     col = col3, cex = df$percbelowpoverty/100*5, pch = 16)
+
+centerPoint <- c(5, 15, 25, 35, 45)
+legend("bottomright", pch = 16, title = "% Below Poverty",
+       pt.cex = centerPoint/100*5,
+       col = rgb(centerPoint/50, 1 - centerPoint/50, 1 - centerPoint/50),
+       legend = c("  0-10", "10-20", "20-30", "30-40", "40-50"))
+```
+
+### 3D Scatter Plot
+
+```{r, eval = F}
+library(rgl)
+plot3d(df$perchsd, df$percwhite, df$percbelowpoverty)
+```

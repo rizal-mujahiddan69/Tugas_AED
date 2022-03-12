@@ -1,0 +1,72 @@
+---
+title: "Plot Violin"
+author: "Elda Manurita"
+date: "2/14/2022"
+output: word_document
+---
+
+## Data visualisasi
+```{r}
+library(ggplot2)
+data(midwest)
+df<-midwest
+```
+
+
+## Violin plot sederhana
+```{r}
+ggplot(df, aes(state, percollege)) + 
+  geom_violin(alpha = 0.2)
+
+```
+
+## Modifikasi dengan boxplot
+```{r}
+ggplot(df, aes(state, percollege)) + 
+  geom_boxplot() + 
+  geom_violin(alpha = 0.2)
+```
+
+## Modifikasi dengan summary
+```{r}
+ggplot(df,aes(state,percollege))+
+  geom_violin()+
+  geom_boxplot(width=.1,fill="black",outlier.colour=NA)+
+  stat_summary(fun.y=median,geom="point",fill="blue",shape=21,size=2.5)
+```
+
+## Modifikasi dengan kuantil
+```{r}
+ggplot(df, aes(state, percollege)) + 
+  geom_violin(draw_quantiles = 0.5) #kuantil 2
+```
+
+## Modifikasi warna
+```{r}
+ggplot(df, aes(state, percollege)) + 
+  geom_violin(aes(col = state), fill = NA, draw_quantiles = c(0.25,0.5,0.75))  +
+  # kuantil 1,2, dan 3
+  labs(title = "Persentase Penduduk Berendidikan Perguruan Tinggi",
+       subtitle = "Berdasarkan Negara Bagian",
+       caption = "Data obtained from the ggplot2 package")
+
+ggplot(df, aes(state, percollege)) + 
+  geom_violin(aes(fill = state)) +
+  scale_fill_viridis_d(option = "B") + 
+  labs(title = "Persentase Penduduk Berendidikan Perguruan Tinggi",
+       subtitle = "Berdasarkan Negara Bagian",
+       caption = "Data obtained from the ggplot2 package")
+```
+
+## Modifikasi dengan titik-titik amatan
+```{r}
+ggplot(df, aes(state, percollege))+
+  geom_violin(fill='lightblue',alpha=0.5)+
+  geom_jitter(position = position_jitter(width = 0.2), col="red", size=1.5)
+```
+
+## Modifikasi jenis garis plot
+```{r}
+ggplot(df, aes(state, percollege))+
+  geom_violin(fill='lightblue', col="darkred",alpha=0.5, linetype="dotted")
+```

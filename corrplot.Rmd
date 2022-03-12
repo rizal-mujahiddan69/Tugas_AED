@@ -1,0 +1,68 @@
+---
+title: "Korelasi menggunakan corrplot"
+author: "Elda Manurita"
+date: "3/7/2022"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data Simulasi
+Data yang digunakan dalam simulasi syntax corrplot untuk menunjukkan korelasi antar peubah adalah data midwest yang tersedia dalam library ggplot2. Peubah yang akan digunakan dalam visualisasi korelasi menggunakan corrplot hanya peubah numerik.
+
+```{r}
+library(ggplot2)
+data(midwest)
+dt<-midwest[,4:26]
+```
+
+## Visualisasi corrplot
+### Visualisasi sederhana
+```{r}
+library(corrplot)
+names(dt)<-paste("X", 1:23) #inisialisasi untuk mempersingkan nama peubah
+cordt<-cor(dt, method = "pearson") #contoh: korelasi pearson
+corrplot(cordt)
+```
+
+### Modifikasi bentuk 
+```{r}
+corrplot(cordt,
+         title = "Correlation Plot", 
+         method = "square"         )
+```
+
+### Modifikasi penggerombolan
+```{r}
+corrplot(cordt,
+         method = "square", 
+         order = "hclust",
+         addrect = 3)
+```
+
+### Modifikasi kemunculan nilai tertentu
+Pada umumnya, matriks korlasi akan menampilkan seluruh nilai korelasi dari peubah-peubah yang digunakan. Modifikasi berikut dapat digunaan ketika hanya ingin menampilkan nilai korelasi tertentu. Contoh yang akan disimulasikan yaitu hanya menampilkan nilai korelasi lebih dari atau sama dengan 0.7 baik berkorelasi secara negatif atau positif.
+
+```{r}
+ind<-abs(cordt)<0.7
+#fungsi abs() digunakan untuk merperhitungkan korelasi positif dan negatif
+#jika hanya ingin menampilkan korelasi positif saja, fungsi abs() dapat dihilangkan
+#ind adalah suatu objek sebagai index yang menandakan nilai korelasi kurang dari 0.7
+
+cor_baru<-cordt
+cor_baru[ind]<-NA
+#nilai korelasi pada cor_baru yang bersesuaian posisi dengan ind akan diganti dengan "NA" sehingga yang akan tampil adalah nilai korelasi lebih dari atau sama dengan 0.7 baik korelasi positif maupun negatif
+
+corrplot(cor_baru, na.label.col = "white", type = "lower")
+#data korelasi yang bernilai NA akan diberi warna "white"
+#argumen type= digunakan untuk menampilkan segitiga bawah atau atas saja dari matriks korelasi
+
+
+```
+
+
+
+
+

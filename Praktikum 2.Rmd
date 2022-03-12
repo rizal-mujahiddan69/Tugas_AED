@@ -1,0 +1,318 @@
+---
+title: "Praktikum 2-STA1232 (AED)"
+author: "Histogram dan Boxplot"
+date: "4/3/2022"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+## Data
+Dataset berikut merupakan data yang akan digunakan dalam ilustrasi histogram dan boxplot
+
+```{r}
+df <- read.csv2("data.csv")
+head(df)
+```
+
+## Histogram
+#### Histogram sederhana
+```{r}
+hist(df$percollege)
+hist(df$percollege, freq = F)
+```
+
+#### Histogram modifikasi
+```{r}
+hist (df$percollege,
+      main ='Histogram persentase berpendidikan perguruan tinggi ',
+      sub = 'Negara bagian Illinois, Indiana, Michigan, Ohio, Wisconsin',
+      ylab = 'Frekuensi',
+      xlab = 'Persentase berpendidikan perguruan tinggi',
+      col = 'light blue')
+hist (df$percollege,
+      main ='Histogram persentase berpendidikan perguruan tinggi ',
+      sub = 'Negara bagian Illinois, Indiana, Michigan, Ohio, Wisconsin',
+      ylab = 'Frekuensi',
+      xlab = 'Persentase berpendidikan perguruan tinggi',
+      col = 'light blue',
+      breaks = seq(min(df$percollege), max(df$percollege), length.out = 21+1))
+
+```
+
+```{r}
+hist (df$percollege,
+      main ='Histogram persentase berpendidikan perguruan tinggi ',
+      sub = 'Negara bagian Illinois, Indiana, Michigan, Ohio, Wisconsin',
+      ylab = 'Frekuensi',
+      xlab = 'Persentase berpendidikan perguruan tinggi',
+      col = 'light blue',
+      breaks = seq(min(df$percollege), max(df$percollege), length.out = 21+1))
+abline(v=median(df$percollege),col="coral",lwd=2)
+abline(v=mean(df$percollege), col="green", lwd=5)
+
+```
+
+#### histogram modifikasi: package ggplot
+```{r}
+library(ggplot2)
+ggplot(df, aes(x=percollege)) + 
+  geom_histogram(color="black", fill="white")+
+  geom_vline(aes(xintercept=mean(percollege)),
+            color="blue", linetype="dashed", size=1)
+ggplot(df, aes(x=percollege)) + 
+  geom_histogram(color="dark blue", fill="light blue", linetype="dashed")+
+  geom_vline(aes(xintercept=mean(percollege)),
+            color="green", linetype="dashed", size=1)
+```
+
+```{r}
+ggplot(df, aes(x=percollege, color=state)) +
+  geom_histogram(fill="white")+
+  theme(legend.position="top")
+
+library(plyr)
+rataan<-ddply(df, "state", summarise, rata2=mean(percollege))
+ggplot(df, aes(x=percollege, color=state)) +
+  geom_histogram(fill="white")+
+  geom_vline(data=rataan, aes(xintercept=rata2, color=state),
+             linetype="dashed")+
+  theme(legend.position="top")
+
+ggplot(df, aes(x=percollege, color=state)) +
+  geom_histogram(fill="white")+
+  geom_vline(data=rataan, aes(xintercept=rata2, color=state),
+             linetype="dashed")+
+  theme(legend.position="top")+
+  scale_color_grey() 
+
+
+
+  
+```
+```{r}
+ggplot(df, aes(x=percollege))+
+  geom_histogram(color="black", fill="white")+
+  facet_grid(state ~ .)+
+  geom_vline(data=rataan, aes(xintercept=rata2, color="red"),
+             linetype="dashed")
+```
+
+
+```{r}
+library(ggplot2)
+ggplot(data = df, aes(x=percollege)) +
+  geom_histogram(aes(fill=state)) +
+  scale_fill_brewer(palette="Set2") +
+  facet_wrap( ~ state, ncol=1) +
+  xlab("Persentase berpendidikan perguruan tinggi") +
+  ylab("Frekuensi") +
+  theme_bw() +
+  ggtitle("Percollege by State\n")
+
+```
+
+
+#### Histogram modifikasi:package ggplot2,gganimate 
+```{r}
+library(gganimate)
+animasi<- ggplot(df,aes(percollege)) + 
+  geom_histogram(col = "white",fill = "blue") + 
+  transition_states(state,5,0.5, wrap = F)+
+  view_follow(fixed_x = T)
+
+animasi
+
+```
+
+
+
+
+## Boxplot
+#### Base
+```{r}
+boxplot(df$percchildbelowpovert)
+```
+
+#### Merubah judul dan warna boxplot
+```{r}
+boxplot(df$percchildbelowpovert, horizontal = T,
+        main = "% of Child Below\nThe Poverty Line in The Midwest", col = "red")
+```
+
+#### Base: Grouping
+##### Pengelompokan dgn x = kategorik dan y = numerik
+```{r}
+boxplot(percchildbelowpovert ~ state, data = df)
+boxplot(percchildbelowpovert ~ inmetro, data = df)
+```
+
+##### Parameter xlim/ylim untuk mengubah batasan skala
+```{r}
+boxplot(percchildbelowpovert ~ inmetro, data = df, ylim = c(0, 100))
+```
+
+##### Masukkan vektor ke dalam parameter col untuk menggunakan banyak warna
+```{r}
+boxplot(percchildbelowpovert ~ inmetro, data = df, ylim = c(0, 100),
+        col = c("red", "blue"))
+```
+
+#### Base: Axis Modification 
+##### xaxt untuk mengubah tipe sumbu-x, xaxt = 'n' untuk menghilangkan isi sumbu
+```{r}
+boxplot(percchildbelowpovert ~ inmetro, data = df, ylim = c(0, 100),
+        col = c("red", "blue"), xaxt = "n")
+# untuk memodifikasi salah satu sumbu
+axis(1, at = 1:2, labels = c("No", "Yes"))
+```
+
+
+
+#### Base: Category Sorting 
+```{r}
+boxplot(percchildbelowpovert ~ state, data = df)
+```
+
+##### Reorder() untuk mengurutkan suatu kategori berdasarkan suatu statistiknya
+##### Dalam kasus ini diurutkan berdasarkan mediannya
+```{r}
+boxplot(df$percchildbelowpovert ~
+                reorder(df$state, df$percchildbelowpovert, FUN = median))
+```
+
+##### reorder() dapat disimpan ke dalam suatu variabel terlebih dahulu sehingga kode bisa menjdai lebih rapih
+```{r}
+state.reord <- reorder(df$state, df$percchildbelowpovert, FUN = median)
+boxplot(df$percchildbelowpovert ~ state.reord)
+```
+
+
+#####membalikkan urutan kategori menggunakan tidyverse::fct_rev()
+```{r}
+library(tidyverse)
+boxplot(df$percchildbelowpovert ~ fct_rev(state.reord)) # reverse factor order
+```
+
+##### Penggunaan parameter data pada fungsi plot
+```{r}
+boxplot(df$percchildbelowpovert ~ state.reord,
+        col = c("darkred", "red", "white", "blue", "darkblue"))
+boxplot(percchildbelowpovert ~ state.reord, data = df,
+        col = c("darkred", "red", "white", "blue", "darkblue"))
+```
+
+##### modifikasi warna, judul, dan label
+```{r}
+boxplot(df$percchildbelowpovert ~ state.reord,
+        col = c("darkblue", "blue", "white", "red", "darkred"),
+        main = "Child Poverty Rate in Midwest Counties,\nGrouped by States",
+        xlab = "State", ylab = "% of Child Living Under Poverty Line",
+        ylim = c(0, 100))
+# menambahkan garis horizontal dan teks
+abline(h = 50, lty = "dashed", col = "grey")
+text(x = 2, y = 64.31 + 7, labels = "Menominee, WI", cex = .725)
+
+max(df$percchildbelowpovert)
+df$county[df$percchildbelowpovert == max(df$percchildbelowpovert)]
+```
+
+#### GGPlot
+```{r}
+library(ggplot2)
+ggplot(data = df, mapping = aes(y = percchildbelowpovert)) + geom_boxplot()
+```
+
+##### Objek ggplot dapat disimpan ke dalam suatu variabel
+```{r}
+bp.child.povr <- ggplot(data = df, mapping = aes(y = percchildbelowpovert)) +
+        geom_boxplot()
+```
+
+#### modifikasi tema di ggplot
+```{r}
+bp.child.povr + theme_light()
+bp.child.povr + theme_bw()
+bp.child.povr + theme_classic()
+bp.child.povr + theme_minimal()
+bp.child.povr + theme_void()  # akan berguna jika menggunakan peta choropleth
+```
+
+#### GGPlot: Grouping
+```{r}
+bp.cp.inmet <- ggplot(
+        data = df, mapping = aes(x = as.factor(inmetro),  # faktor krn kategorik
+                                 y = percchildbelowpovert)
+) + geom_boxplot()
+
+bp.cp.inmet + theme_classic()
+```
+
+#### GGPlot: Group Coloring 
+```{r}
+cp.inmet.col <- ggplot(
+        data = df, mapping = aes(x = as.factor(inmetro),
+                                 y = percchildbelowpovert,
+                                 fill = as.factor(inmetro))
+)
+```
+
+##### Modifikasi warna dan transparansi
+```{r}
+cp.inmet.col + geom_boxplot(fill = "orange") + theme_classic()
+cp.inmet.col + geom_boxplot(fill = "orange", alpha = .35) + theme_classic()
+```
+
+fill (warna isi) vs color (warna garis/border)
+```{r}
+cp.inmet.col + geom_boxplot(fill = "orange", color = "brown") + theme_classic()
+cp.inmet.col + geom_boxplot(fill = c("red", "blue")) + theme_classic()
+```
+
+#### GGPlot: Axis Modification 
+```{r}
+cp.inmet.col + geom_boxplot(fill = c("red", "blue")) + theme_classic()
+```
+
+##### Menukar sumbu-x dan y
+```{r}
+cp.inmet.col + geom_boxplot(fill = c("red", "blue"))  + theme_classic() +
+        coord_flip()
+```
+
+##### Modifikasi label dan ticks pada sumbu-x dan y
+```{r}
+cp.inmet.col + geom_boxplot(fill = c("red", "blue")) + theme_classic() +
+        xlab("County considered in a metro area?") +
+        ylab("% of Child Living Under Poverty") +
+        scale_x_discrete(breaks = c(0, 1), labels = c("No", "Yes")) +
+        ylim(0, 100)
+```
+
+
+#### GGPlot: Category Sorting 
+```{r}
+ggplot(df, aes(x = reorder(state, percchildbelowpovert, median),
+               y = percchildbelowpovert)) +
+        geom_boxplot()
+```
+
+```{r}
+# state.reord telah dideklarasikan sebelumnya
+cp.state <- ggplot(df, aes(x = state.reord, y = percchildbelowpovert,
+                           color = state.reord))
+
+cp.state + geom_boxplot()
+```
+
+##### Membalikkan urutan kategori
+```{r}
+cp.state + geom_boxplot() + scale_x_discrete(limits = rev(levels(state.reord)))
+```
+
+boxplot + jitter
+```{r}
+cp.state + geom_boxplot() + geom_jitter(alpha = .5) + scale_x_discrete() +
+        theme(legend.position="none")  # menghilangkan legenda
+```
+

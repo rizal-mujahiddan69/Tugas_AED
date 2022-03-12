@@ -1,0 +1,172 @@
+---
+title: "PP-plot"
+author: "Elda Manurita"
+date: "2/7/2022"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# PP-Plot
+
+  Deteksi sebaran dari suatu data secara eksploratif selain menggunakan QQ plot juga dapat menggunakan PP plot (Probability-Probability plot). Plot ini hampir sama dengan QQ plot yaitu berupa plot pencar yang digunakan untuk melihat kecocokan dari 2 dataset atau dataset terhadap sebaran tertentu. Namun pada PP plot, yang dibandingkan adalah peluang sebaran komulatif. Kedua dataset dikatakan identik atau suatu dataset dikatakan mengikuti sebaran tertentu jika titik-titik mendekati garis lurus diagonal y=x dimana dimulai dari titik (0,0) hingga (1,1). PP plot dalam mendeteksi sebaran dari suatu data menggunakan R dapat dibangun menggunakan langkah-langkah berikut:
+
+1. Mengurutkan data dari yang terkecil hingga terbesar
+2. Memeriksa data duplikat. Jika terdapat data duplikat, perlu dilakukan manajemen data untuk mengambil data unik
+3. menghitung peluang kumulatif dari masing-masing data unik sebagai peluang kumulatif dari data empiris
+4. menghitung peluang kumulatif dari data unif berdasarkan sebaran teoritis tertentu
+5. plot antara peluang kumulatif data empiris dengan peluang kumulatif sebara teoritis
+
+Simulasi deteksi sebaran menggunakan PP plotdalam R dapat mengikuti syntax berikut:
+```{r}
+#Membangktikan data (ex: menyebar normal)
+set.seed(1)
+x<-rnorm(100,mean=2, sd=1)
+x<-sort(x) #mengurutkan data empiris dari yang terkecil
+i<-seq(1:length(x))
+df<-data.frame(i,x)
+m<-mean(x)
+s<-sd(x)
+n<-length(x)
+head(df, 10)
+```
+
+```{r}
+#Memeriksa data duplikat
+library(dplyr)
+uniqe_x<-distinct(df,x)
+dim(uniqe_x) #semua data unik, banyak data unik sama dengan banyak data yang dibangkitkan
+```
+
+```{r}
+#Peluang kumulatif data empiris
+cdf_x<-0
+sum=0
+for(i in 1:n){
+  sum=sum+(1/n)
+  cdf_x[i]<-sum
+}
+df$cdf_x<-cdf_x
+head(df, 10)
+```
+
+```{r}
+#Peluang kumulatif sebaran teoritis (Normal)
+cdf_normal<-pnorm(df$x, mean=m, sd=s)
+#atau dapat menggunakan sebaran normal baku
+z_score<-(df$x-m)/s
+cdf_norm<-pnorm(z_score, mean=0, sd=1)
+
+df$cdf_norm<-cdf_norm
+head(df, 10)
+```
+
+```{r}
+library(ggplot2)
+histogram<-ggplot(df) +
+  geom_histogram(aes(x = x),fill="darkred",col="darkred") +
+  ggtitle("Histogram data empiris") +
+  ylab("Frekuensi") +
+  xlab("x") + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+pp_norm<-ggplot(df) +
+  geom_point(aes(x = cdf_x,y = cdf_norm),
+             color="steelblue",size=2) +
+  ggtitle("PP-plot Terhadap Sebaran Normal") +
+  ylab("Peluang kumulatif sebaran normal") +
+  xlab("Peluang kumulatif data empiris") + 
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme_linedraw()+
+  geom_abline(intercept = 0, slope = 1, col="darkred", lwd=1)
+
+par(mfrow=c(1,2))
+histogram
+pp_norm
+```
+
+
+```{r}
+#Peluang kumulatif sebaran teoritis (Chi-square)
+cdf_chisq<-pchisq(df$x, df=m)
+df$cdf_chisq<-cdf_chisq
+head(df,10)
+```
+
+```{r}
+pp_chisq<-ggplot(df) +
+  geom_point(aes(x = cdf_x,y = cdf_chisq),
+             color="steelblue",size=2) +
+  ggtitle("PP-plot Terhadap Sebaran Chi-square") +
+  ylab("Peluang kumulatif sebaran chi-square") +
+  xlab("Peluang kumulatif data empiris") + 
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme_linedraw()+
+  geom_abline(intercept = 0, slope = 1, col="darkred", lwd=1)
+
+par(mfrow=c(1,2))
+histogram
+pp_chisq
+```
+
+```{r}
+#Peluang kumulatif sebaran teoritis (Eksponensial)
+cdf_exp<-pexp(df$x, rate=m)
+df$cdf_exp<-cdf_exp
+head(df,10)
+```
+
+```{r}
+pp_exp<-ggplot(df) +
+  geom_point(aes(x = cdf_x,y = cdf_exp),
+             color="steelblue",size=2) +
+  ggtitle("PP-plot Terhadap Sebaran Exponensial") +
+  ylab("Peluang kumulatif sebaran exponensial") +
+  xlab("Peluang kumulatif data empiris") + 
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme_linedraw()+
+  geom_abline(intercept = 0, slope = 1, col="darkred", lwd=1)
+
+par(mfrow=c(1,2))
+histogram
+pp_exp
+```
+
+```{r}
+#Peluang kumulatif sebaran teoritis (Gamma)
+cdf_gamma<-pgamma(df$x, shape = 1, rate = 1) #alfa=1, beta=1
+df$cdf_gamma<-cdf_gamma
+head(df,10)
+
+```
+
+```{r}
+pp_gamma<-ggplot(df) +
+  geom_point(aes(x = cdf_x,y = cdf_gamma),
+             color="steelblue",size=2) +
+  ggtitle("PP-plot Terhadap Sebaran Gamma") +
+  ylab("Peluang kumulatif sebaran gamma") +
+  xlab("Peluang kumulatif data empiris") + 
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme_linedraw()+
+  geom_abline(intercept = 0, slope = 1, col="darkred", lwd=1)
+
+par(mfrow=c(1,2))
+histogram
+pp_gamma
+```
+
+```{r}
+par(mfrow=c(2,2))
+pp_norm
+pp_chisq
+pp_exp
+pp_gamma
+```
+
+  Berdasarkan PP-plot di atas, data paling mendekati sebaran normal. Titik-titik pada plot mendekati garis diagonal y=x. Hal ini sesuai dengan data yang memang dibangkitkan dari sebaran normal.
+  
+
+
