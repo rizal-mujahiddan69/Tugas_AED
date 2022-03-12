@@ -1,0 +1,467 @@
+---
+title: "kuis2_G64190069_Rizal_Mujahiddan"
+author: "Rizal Mujahiddan"
+date: "3/12/2022"
+output: pdf_document
+---
+
+
+# Soal Nomor 1
+
+
+```{r}
+library(MASS)
+library(ggplot2)
+library(visdat)
+library(tidyverse)
+library(rcompanion)
+library(corrplot)
+
+```
+
+```{r}
+dataku <- read.csv("Kuis UTS 2.csv",sep = ";")
+head(dataku)
+```
+
+```{r}
+vis_miss(dataku)
+
+```
+bisa dilihat bhawa datanya tidak memiliki missing value, maka bisa langsung <br> 
+dieksplorasi , tapi sebelumnya kita memperbaiki tipe data tersebut ya
+
+```{r}
+str(dataku)
+
+```
+
+```{r}
+# Diprogram ini, penulis mengubah tipe datanya ya
+# mengubah koma menjadi titik agar menjadi double ya atau numeric
+
+num_kol <- c("R.D.Spend","Administration","Marketing.Spend","Profit")
+for(i in num_kol){
+  dataku[[i]] <- sub(",",".",dataku[[i]])
+  dataku[[i]] <- as.numeric(dataku[[i]])
+}
+
+head(dataku)
+```
+## String Prerocessing
+Setelah diubah pada bagian numericnya, maka alangkah lebih baiknya String bisa 
+<br> kita cek terlebih dahulu apakah bisa dilakukan faktor data gitu
+
+```{r}
+# dikarenakan hanya satu kolom, maka kita ubah saja satu kolom tanpa buat vector
+# kolom tersebut ya
+#ini memastikan tidak ada typo pada kolom tersebut
+print(unique(dataku$State))
+```
+## Pemfaktoran
+Ternyata tidak ada typo dalam data Tersebut ya langsung kita faktorkan
+```{r}
+dataku$State <- factor(dataku$State)
+head(dataku)
+```
+
+
+# Eksplorasi data
+
+
+## R.D.Spend
+### Boxplot
+```{r}
+ggplot(dataku,aes(x=State,y=R.D.Spend,fill=State)) + 
+  ggtitle("BoxPlot pada R.D.Spend per State ")+
+  geom_boxplot()
+
+```
+
+Jika kita lihat, Tidak ada outliernya, berarti kira kira
+Tidak ada biaya tambahan yang berlebih atau yang berkurang
+dari suatu wilayah tersebut ya didalam R & D Spend di setiap 
+state, meskipun ada Perbedaan sedikit ya, Newyork lebih besar
+dikarenakan newyork sendiri menjadi ibaratnya kota ekonomi yang lebih
+pesat dan banyak kantor disana seperti Kota Jakarta kalau di Indonesia
+
+### Density plot
+```{r}
+ggplot(dataku,aes(x=R.D.Spend)) + 
+  geom_density(color=4,fill=4,alpha=0.25) +
+  ggtitle("Density plot R.D Spend")
+
+```
+Sekilas, R.D Spend ini menyebar normal yang artinya, 
+bahwa biaya tersebut bisa dikatakan wajar, dan tidak ada
+keanehan dalam R.D spend tersebut, maka ini jika ditinjau 
+keseluruhan
+
+
+```{r}
+ggplot(dataku,aes(x=R.D.Spend)) + 
+  geom_density(mapping=aes(fill=State),alpha=0.25) +
+  ggtitle("Density plot R.D Spend by State") +
+  facet_wrap(~ State, ncol = 3)
+
+```
+Disini bisa kita lihat cenderung normal, berarti tidak ada keanehan
+pada data tersebut , Kecuali pada California, tidak tepat ditengah
+(Subjektif)
+
+```{r}
+data_california <- dataku %>% filter(State == "California")
+data_new_york <- dataku %>% filter(State == "New York")
+data_florida <- dataku %>% filter(State == "Florida")
+
+```
+
+
+## Administration
+### Boxplot
+
+```{r}
+ggplot(dataku,aes(x=State,y=Administration,fill=State)) + 
+  ggtitle("BoxPlot pada administration per State ")+
+  geom_boxplot()
+```
+Disini , ada biaya Administrasi , untuk rata rata hampir mendekati sama untuk masing masing state. Tetapi masalahnya ada di florida. Kemungkinan ada praktik Fraud dalam pembiayaan, atau jika kita berprasanka baik, ada kesalahan dalam masuk data 
+
+
+### Density plot
+```{r}
+ggplot(dataku,aes(x=Administration)) + 
+  geom_density(color=4,fill=4,alpha=0.25) +
+  ggtitle("Density plot Administration")
+```
+
+di Administration ini, persebarannya normal tetapi di gelembung di sebelah kanan dan mengembung, maka bisa dipastikan bahwa administrasi mungkin tidak begitu rata dilapangan, berarti ada suatu
+halmungkin dari biaya berbeda di suatu daerah, maka kita cek lagi
+
+
+```{r}
+ggplot(dataku,aes(x=Administration)) + 
+  geom_density(mapping=aes(fill=State),alpha=0.25) +
+  ggtitle("Density plot R.D Spend by State") +
+  facet_wrap(~ State, ncol = 3)
+```
+
+UNtuk florida, sangatlah curam dan kurang lebar persebarannya berarti variasi biaya administrasi sangat kecil, sehingga penetapan harga lumayan bagus
+
+California agak rendah dan agak lebar, variasinya tinggi
+Newyork skewness positif, berarti memang karena kota ekonomi, maka harga administrasi lumayan mahal memang wajar
+
+
+## marketing spend
+
+### boxplot
+```{r}
+ggplot(dataku,aes(x=State,y=Marketing.Spend,fill=State)) + 
+  ggtitle("BoxPlot pada Marketing.Spend per State ")+
+  geom_boxplot()
+
+```
+
+Markeing pada daerah Newyork lebih tinggi dibanding yang lain dan variatif, mungkin dikarenakan persaingan yang sangat berat karena dibutuh pengiklanan dan promosi yang besar besaran. 
+Untuk California,mungkin disini ada perusahaan yang tujuan pemasarannya yang sangat luas dibanding yang lain, maka dari itu butuh iklan yang lebih besar daripada yang lain
+
+
+### Density plot
+```{r}
+
+ggplot(dataku,aes(x=Marketing.Spend)) + 
+  geom_density(color=4,fill=4,alpha=0.25) +
+  ggtitle("Density plot Marketing.Spend")
+```
+
+Disini mendekati normal ya, maka lumayan baik tersebar merata. persaingannya sewajarnya
+
+```{r}
+ggplot(dataku,aes(x=Marketing.Spend)) + 
+  geom_density(mapping=aes(fill=State),alpha=0.25) +
+  ggtitle("Density plot R.D Marketing.Spend by State") +
+  facet_wrap(~ State, ncol = 3)
+```
+
+Disini di state masing masing normal, mungkin hanya persebaran newyork yang lebih lebar dikarenakan persaingan ini membutuhkan iklan yang lebih banyak
+
+
+## Profit
+### Boxplot
+```{r}
+ggplot(dataku,aes(x=State,y=Profit,fill=State)) + 
+  ggtitle("BoxPlot pada Profit per State ")+
+  geom_boxplot()
+
+```
+
+Persebarannya hampir sama antar Florida dan Newyork, meskipun Newyork lebih panjang, ternyata di florida dan newyork ada perusahaan besar yang menguasai di negara florida atau new york
+
+
+### Density plot
+
+```{r}
+ggplot(dataku,aes(x=Profit)) + 
+  geom_density(color=4,fill=4,alpha=0.25) +
+  ggtitle("Density plot Profit")
+```
+
+Profit ini Skewness , berarti kebanyakan perusahaan sangatlah berjuang dalam mendapatkan keuntungan meskipun untungnya tersebut kecil, dan ada kemungkinan ada perusahaan raksasa yang menguasai pasar
+
+
+```{r}
+ggplot(dataku,aes(x=Profit)) + 
+  geom_density(mapping=aes(fill=State),alpha=0.25) +
+  ggtitle("Density plot Profit by State") +
+  facet_wrap(~ State, ncol = 3)
+```
+
+Sudah dibuktikan, bahwa keuntungan ini dikuasai Perusahaan raksasa di seluruh 3 kota meskipun perusahaan tersebut berbeda beda, maupun ada 
+
+# Soal Nomor 2
+## Density Plot profit
+```{r}
+ggplot(dataku,aes(x=Profit)) + 
+  geom_density(color=4,fill=4,alpha=0.25) +
+  ggtitle("Density plot Profit")
+
+```
+Disini bukan Normal yah jika kita lihat secara Subjektif, dikarenkaan bisa dilihat sendiri, pertama Skewness positif atau bisa kita katakan berarti tidak simertris,berarti tidak normal dan juga tidak berbentuk seperti bell, maka tidak normal.
+
+
+Untuk lebih yakin,maka  kita uji dengan shapiro test karena lebih baik di test dibanding hanya dari pandangan sahaja
+
+
+```{r}
+shapiro.test(dataku$Profit)
+```
+Kan didalam Shapiro itu, jika null Hipotesis maka normal,
+alternativenya , tidak normal.
+
+maka, dikarenakan p-value < 0.05, --> tolak H0
+
+maka Profit tidak Normal ya
+
+
+dasar shapiro wilk itu seperti
+<a href="https://www.spss-tutorials.com/spss-shapiro-wilk-test-for-normality/"> Artikel ini</a><br/>
+
+ini seperti menghitung selisih data asli dan data normal, kemudian dijumlahkan semuanya
+
+
+# Soal Nomor 3
+## TransformTukey
+
+Dikarenakan pada test shapiro tersebut telah terbukti profit tidak normal maka lebih baik dilakukan tranformasi
+
+```{r}
+profit_tukey <- transformTukey(dataku$Profit)
+
+```
+Dari hasil tersebut, ada plot W Vs lambda, itu yang W itu adalah hasil perhitungan dari shapiro test ya dan lambda adalah lambda pada rumus Tukey nya 
+
+<a href="https://onlinestatbook.com/2/transformations/tukey.html">
+ini site untuk rumus lambdanya</a>
+
+
+Dikarenakan lambdanya adalah 0.125 maka hasilnya adalah, dipangkatkan 0.125 berarti data tersebut di akar pangkat 8 agar lebih normal dan dengan test shapiro juga sudah ditest normal ya.
+
+
+oh iya jika kurang dari 1 lamdanya berarti itu dalam kondisis skewness positif (menjulur ke kanan)
+kalau lebih dari lambdanya 1 berarti kondisi tersebut menjulur kekiri (skewness negatif)
+
+
+## Transformasi boxcox
+```{r}
+bc_pr <- boxcox(dataku$Profit ~ 1)
+bc_lambda <- bc_pr$x[which.max(bc_pr$y)]
+bc_profit <- (dataku$Profit^bc_lambda - 1)/bc_lambda
+
+```
+
+untuk teorinya  <a href="https://onlinestatbook.com/2/transformations/box-cox.html"> ada di sini ya </a> 
+
+```{r}
+# Disini dengan menggunakan shapiro test, maka bisa ditentokan transform tukey
+# dengan boxcox
+
+aa <- shapiro.test(profit_tukey)
+bb <- shapiro.test(bc_profit)
+
+print(paste("tukey",aa$statistic))
+print(paste("boxcox",bb$statistic))
+aa$statistic > bb$statistic
+```
+
+
+Dikarenakan lebih besar adalah tukey, maka yang digunakan adalah tukey
+```{r}
+dataku_transform = dataku
+dataku_transform$Profit <- profit_tukey
+```
+
+
+# Soal Nomor 4
+
+Dikarenakan Saya berasumsi bahwa dalam dataset tersebut, yang dicari adalah profit maka saya akan plot selalu terhadap profit
+
+
+## R.D.Spend_untransformed
+
+```{r}
+ggplot(dataku,aes(x=R.D.Spend,y=Profit)) +
+  ggtitle("Plot R.D.Spend vs Profit (untransform)") +
+  geom_point()
+
+ggplot(dataku,aes(x=R.D.Spend,y=Profit,
+                  shape=State,
+                  color=State)) +
+  ggtitle("Plot R.D.Spend vs Profit group in State (untransform)") +
+  geom_point()
+```
+Di plot 1 , disini ada kecenderungan cekung ke atas yaa , mungkin harus di transform
+Di plot 2, disini tidak ada pengelompokan nilai tersebut ya
+
+```{r}
+ggplot(dataku_transform,aes(x=R.D.Spend,y=Profit)) +
+  ggtitle("Plot R.D.Spend vs Profit (transform)") +
+  geom_point()
+
+ggplot(dataku_transform,aes(x=R.D.Spend,y=Profit,
+                  shape=State,
+                  color=State)) +
+  ggtitle("Plot R.D.Spend vs Profit group in State (transform)") +
+  geom_point()
+```
+
+Di plot pertama, berkorelasi positif karena sudah jelas bergerak ke atas kanan , 
+Di plot kedua, data antar statetnya sudah tercampur, sehingga tidak perlu adanya clustering 
+Sehingga datanya tersebut jika di regresikan maka setiap group bergaris sama nilainya
+
+
+## Administration
+```{r}
+
+ggplot(dataku,aes(x=Administration,y=Profit)) +
+  ggtitle("Plot Administration vs Profit (untransformed)") +
+  geom_point()
+
+ggplot(dataku,aes(x=Administration,y=Profit,
+                  shape=State,
+                  color=State)) +
+  ggtitle("Plot Administration vs Profit group in State (untransformed)") +
+  geom_point()
+
+```
+
+untuk plot pertama; <br>
+Waduh, disini tidak terlihat berkorelasi baik negatif maupun positif ya,
+berarti dikarenakan secara logika administrasi dengan profit bisa dikatakan 
+ada hubungannya, maka adminstrasi tidak mempengaruhi profit
+
+untuk plot kedua, <br>
+disini tidak ada pengelompokan data yang berarti
+
+
+
+```{r}
+
+ggplot(dataku_transform,aes(x=Administration,y=Profit)) +
+  ggtitle("Plot R.D.Spend vs Profit (transform)") +
+  geom_point()
+
+ggplot(dataku_transform,aes(x=Administration,y=Profit,
+                  shape=State,
+                  color=State)) +
+  ggtitle("Plot R.D.Spend vs Profit group in State (transform)") +
+  geom_point()
+
+```
+untuk plot pertama; <br>
+Waduh, disini tidak terlihat berkorelasi baik negatif maupun positif ya,
+berarti dikarenakan secara logika administrasi dengan profit bisa dikatakan 
+ada hubungannya, maka adminstrasi tidak mempengaruhi profit
+
+untuk plot kedua, <br>
+disini tidak ada pengelompokan data yang berarti
+
+
+## Marketing Spend
+```{r}
+ggplot(dataku,aes(x=Marketing.Spend,y=Profit)) +
+  ggtitle("Plot Marketing.Spend vs Profit (untransformed)") +
+  geom_point()
+
+ggplot(dataku,aes(x=Marketing.Spend,y=Profit,
+                  shape=State,
+                  color=State)) +
+  ggtitle("Plot Marketing.Spend vs Profit group in State (untransformed)") +
+  geom_point()
+```
+Untuk plot pertama ada suatu nilai yang berbentuk aneh tetapi jika diperhatikan
+maka berkoelasi positif ya
+
+Unutk plot kedua, masih saja tercampur rata di statenya
+
+```{r}
+ggplot(dataku_transform,aes(x=Marketing.Spend,y=Profit)) +
+  ggtitle("Plot R.D.Spend vs Profit (transform)") +
+  geom_point()
+
+ggplot(dataku_transform,aes(x=Marketing.Spend,y=Profit,
+                  shape=State,
+                  color=State)) +
+  ggtitle("Plot R.D.Spend vs Profit group in State (transform)") +
+  geom_point()
+```
+Untuk plot pertama ada suatu nilai yang berbentuk aneh tetapi jika diperhatikan
+maka berkoelasi positif ya
+
+Unutk plot kedua, masih saja tercampur rata di statenya
+
+Nah, Untuk Marketing.Spend harus Ditransformasi ya dikarenakan bentuknya tidak terlihat jelas yaa
+
+
+```{r}
+pairs(dataku[,num_kol],lower.panel = NULL,main="data untransform")
+```
+
+
+Disini , ada correlasi antara merketin spend dan R.D Spend, maka diperlukan tindakan
+agar tidak ada corealsi antar peubah  (multicolinearity), maka harus diuji VIF, agar bisa
+baik yaah sehingga Profit bisa meningkat yaa
+
+
+
+```{r}
+pairs(dataku_transform[,num_kol],lower.panel = NULL,main="data untransform")
+```
+Disini , ada correlasi antara merketin spend dan R.D Spend, maka diperlukan tindakan
+agar tidak ada corealsi antar peubah  (multicolinearity), maka harus diuji VIF, agar bisa
+baik yaah sehingga Profit bisa meningkat yaa
+
+```{r}
+angka_dat<- cor(dataku[,num_kol])
+angka_dat_tr<- cor(dataku_transform[,num_kol])
+
+
+corrplot(angka_dat,main="untranform")
+
+corrplot(angka_dat_tr,main="tranform")
+```
+
+Kurang ada perbedaan yang mencolok ya
+
+# Tambahan
+
+```{r}
+dataku_transform$Marketing.Spend <- transformTukey(dataku_transform$Marketing.Spend,
+                                                   plotit = FALSE)
+pairs(dataku_transform[,num_kol])
+```
+
+Disini Ada suatu Perbedaan, di Marketing.Spend ya,
+
+
+
+
