@@ -1,0 +1,1068 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\title{G64190069\_latihan praktikum 12}
+\author{Rizal Mujahiddan}
+\date{5/17/2022}
+
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={G64190069\_latihan praktikum 12},
+  pdfauthor={Rizal Mujahiddan},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\begin{document}
+\maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(readxl)}
+\FunctionTok{library}\NormalTok{(EnvStats)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'EnvStats'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:stats':
+## 
+##     predict, predict.lm
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:base':
+## 
+##     print.default
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(MASS)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'MASS'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:EnvStats':
+## 
+##     boxcox
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(fitdistrplus)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: survival
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\FunctionTok{library}\NormalTok{(psych)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'psych'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:ggplot2':
+## 
+##     %+%, alpha
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(car)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: carData
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'car'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:psych':
+## 
+##     logit
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:EnvStats':
+## 
+##     qqPlot
+\end{verbatim}
+
+\hypertarget{nomor-1}{%
+\section{Nomor 1}\label{nomor-1}}
+
+Untuk Nomor 1, Dipergunakan methode mendeteksi pencilan dengan
+eksplorasi data dengan menggunakan boxplot dengan IQR = 1.5
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data\_sheet1 }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"Data praktikum 12.xlsx"}\NormalTok{,}\AttributeTok{sheet=}\StringTok{"data 100"}\NormalTok{)}
+\NormalTok{data\_sheet2 }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"Data praktikum 12.xlsx"}\NormalTok{,}\AttributeTok{sheet=}\StringTok{"data 10"}\NormalTok{)}
+
+\NormalTok{x1 }\OtherTok{\textless{}{-}}\NormalTok{ data\_sheet2}\SpecialCharTok{$}\NormalTok{x1}
+\NormalTok{x2 }\OtherTok{\textless{}{-}}\NormalTok{ data\_sheet2}\SpecialCharTok{$}\NormalTok{x2}
+\NormalTok{y1 }\OtherTok{\textless{}{-}}\NormalTok{ data\_sheet1}\SpecialCharTok{$}\NormalTok{y1}
+\NormalTok{y2 }\OtherTok{\textless{}{-}}\NormalTok{ data\_sheet1}\SpecialCharTok{$}\NormalTok{y2}
+
+
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\FunctionTok{boxplot}\NormalTok{(x1,}\AttributeTok{main=}\StringTok{"x1"}\NormalTok{)}
+\FunctionTok{boxplot}\NormalTok{(x2,}\AttributeTok{main=}\StringTok{"x2"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{G64190069_latihan-praktikum-12_files/figure-latex/unnamed-chunk-2-1.pdf}
+\#\# X1 ada satu outlier yang terlihat, kemudian jika diperhatikan
+kembali, maka hasilnya cenderung menjulur ke kanan
+
+\hypertarget{rosnertest}{%
+\subsubsection{rosnerTest}\label{rosnertest}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ros\_x1 }\OtherTok{\textless{}{-}} \FunctionTok{rosnerTest}\NormalTok{(x1,}\AttributeTok{k=}\DecValTok{4}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in rosnerTest(x1, k = 4): The true Type I error may be larger than
+## assumed. See the help file for 'rosnerTest' for a table with information on the
+## estimated Type I error level.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{allstat\_ros }\OtherTok{\textless{}{-}}\NormalTok{ ros\_x1}\SpecialCharTok{$}\NormalTok{all.stats}
+\NormalTok{vec\_x1\_ros }\OtherTok{\textless{}{-}}\NormalTok{ x1[allstat\_ros[allstat\_ros[}\StringTok{\textquotesingle{}Outlier\textquotesingle{}}\NormalTok{]}\SpecialCharTok{==}\ConstantTok{TRUE}\NormalTok{,}\StringTok{\textquotesingle{}Obs.Num\textquotesingle{}}\NormalTok{]]}
+\NormalTok{vec\_x1\_ros}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 24.75342
+\end{verbatim}
+
+\hypertarget{x2}{%
+\subsection{X2}\label{x2}}
+
+Tidak outlier yang terlihat, Kemudian Disini maka cenderung menyebar
+normal tetapi mean agak bergeser ke kiri
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ros\_x2 }\OtherTok{\textless{}{-}} \FunctionTok{rosnerTest}\NormalTok{(x2,}\AttributeTok{k=}\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in rosnerTest(x2, k = 5): The true Type I error may be larger than
+## assumed. See the help file for 'rosnerTest' for a table with information on the
+## estimated Type I error level.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{allstat\_ros }\OtherTok{\textless{}{-}}\NormalTok{ ros\_x2}\SpecialCharTok{$}\NormalTok{all.stats}
+\NormalTok{vec\_x2\_ros }\OtherTok{\textless{}{-}}\NormalTok{ x2[allstat\_ros[allstat\_ros[}\StringTok{\textquotesingle{}Outlier\textquotesingle{}}\NormalTok{]}\SpecialCharTok{==}\ConstantTok{TRUE}\NormalTok{,}\StringTok{\textquotesingle{}Obs.Num\textquotesingle{}}\NormalTok{]]}
+\NormalTok{vec\_x2\_ros}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1]  7.526452 -2.991378  4.533626  3.939124
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\FunctionTok{boxplot}\NormalTok{(y1,}\AttributeTok{main=}\StringTok{"y1"}\NormalTok{)}
+\FunctionTok{boxplot}\NormalTok{(y2,}\AttributeTok{main=}\StringTok{"y2"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{G64190069_latihan-praktikum-12_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+\hypertarget{y1}{%
+\subsection{Y1}\label{y1}}
+
+ada satu outlier yang terlihat, kemudian jika diperhatikan kembali,
+median ada di sebelah kenan
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ros\_y1 }\OtherTok{\textless{}{-}} \FunctionTok{rosnerTest}\NormalTok{(y1,}\AttributeTok{k=}\DecValTok{5}\NormalTok{)}
+\NormalTok{allstat\_ros }\OtherTok{\textless{}{-}}\NormalTok{ ros\_y1}\SpecialCharTok{$}\NormalTok{all.stats}
+\NormalTok{vec\_y1\_ros }\OtherTok{\textless{}{-}}\NormalTok{ y1[allstat\_ros[allstat\_ros[}\StringTok{\textquotesingle{}Outlier\textquotesingle{}}\NormalTok{]}\SpecialCharTok{==}\ConstantTok{TRUE}\NormalTok{,}\StringTok{\textquotesingle{}Obs.Num\textquotesingle{}}\NormalTok{]]}
+\NormalTok{vec\_y1\_ros}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## numeric(0)
+\end{verbatim}
+
+\hypertarget{y2}{%
+\subsection{Y2}\label{y2}}
+
+Tidak outlier yang terlihat, Kemudian Disini maka cenderung menjulur ke
+kanan
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ros\_y2 }\OtherTok{\textless{}{-}} \FunctionTok{rosnerTest}\NormalTok{(y1,}\AttributeTok{k=}\DecValTok{5}\NormalTok{)}
+\NormalTok{allstat\_ros }\OtherTok{\textless{}{-}}\NormalTok{ ros\_y1}\SpecialCharTok{$}\NormalTok{all.stats}
+\NormalTok{vec\_y2\_ros }\OtherTok{\textless{}{-}}\NormalTok{ y1[allstat\_ros[allstat\_ros[}\StringTok{\textquotesingle{}Outlier\textquotesingle{}}\NormalTok{]}\SpecialCharTok{==}\ConstantTok{TRUE}\NormalTok{,}\StringTok{\textquotesingle{}Obs.Num\textquotesingle{}}\NormalTok{]]}
+\NormalTok{vec\_y2\_ros}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## numeric(0)
+\end{verbatim}
+
+\hypertarget{nomor-2}{%
+\section{Nomor 2}\label{nomor-2}}
+
+\hypertarget{x1}{%
+\subsection{X1}\label{x1}}
+
+\hypertarget{trimmed-mean}{%
+\subsubsection{Trimmed Mean}\label{trimmed-mean}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{mean}\NormalTok{(x1,}\AttributeTok{trim =} \FloatTok{0.05}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 21.02891
+\end{verbatim}
+
+\hypertarget{winsorzed-mean}{%
+\subsubsection{Winsorzed Mean}\label{winsorzed-mean}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{winsor.mean}\NormalTok{(x1, }\AttributeTok{trim=}\FloatTok{0.05}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 20.92647
+\end{verbatim}
+
+\hypertarget{m-estimators}{%
+\subsubsection{M-Estimators}\label{m-estimators}}
+
+\hypertarget{huber}{%
+\paragraph{huber}\label{huber}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fun\_hub\_x1 }\OtherTok{\textless{}{-}} \FunctionTok{psi.huber}\NormalTok{(x1, }\AttributeTok{k =} \FloatTok{1.345}\NormalTok{, }\AttributeTok{deriv =} \DecValTok{0}\NormalTok{)}
+\NormalTok{df\_hub\_x1 }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{xx=}\NormalTok{x1,}\AttributeTok{psi\_hub=}\NormalTok{fun\_hub\_x1)}
+\FunctionTok{ggplot}\NormalTok{(df\_hub\_x1,}\FunctionTok{aes}\NormalTok{(xx,psi\_hub)) }\SpecialCharTok{+} 
+  \FunctionTok{geom\_line}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Function huber in X1"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{G64190069_latihan-praktikum-12_files/figure-latex/unnamed-chunk-10-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{M\_es\_hub }\OtherTok{\textless{}{-}} \FunctionTok{huber}\NormalTok{(x1, }\AttributeTok{k =} \FloatTok{1.345}\NormalTok{)}
+\NormalTok{M\_es\_hub}\SpecialCharTok{$}\NormalTok{mu}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 20.77871
+\end{verbatim}
+
+\hypertarget{x2-1}{%
+\subsection{X2}\label{x2-1}}
+
+\hypertarget{trimmed-mean-1}{%
+\subsubsection{Trimmed Mean}\label{trimmed-mean-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{mean}\NormalTok{(x2,}\AttributeTok{trim =} \FloatTok{0.05}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2.020437
+\end{verbatim}
+
+\hypertarget{winsorzed-mean-1}{%
+\subsubsection{Winsorzed Mean}\label{winsorzed-mean-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{winsor.mean}\NormalTok{(x2, }\AttributeTok{trim=}\FloatTok{0.05}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 2.045956
+\end{verbatim}
+
+\hypertarget{m-estimators-1}{%
+\subsubsection{M-Estimators}\label{m-estimators-1}}
+
+\hypertarget{huber-1}{%
+\paragraph{huber}\label{huber-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fun\_hub\_x2 }\OtherTok{\textless{}{-}} \FunctionTok{psi.huber}\NormalTok{(x2, }\AttributeTok{k =} \FloatTok{1.345}\NormalTok{, }\AttributeTok{deriv =} \DecValTok{0}\NormalTok{)}
+\NormalTok{df\_hub\_x2 }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{xx=}\NormalTok{x2,}\AttributeTok{psi\_hub=}\NormalTok{fun\_hub\_x2)}
+\FunctionTok{ggplot}\NormalTok{(df\_hub\_x2,}\FunctionTok{aes}\NormalTok{(xx,psi\_hub)) }\SpecialCharTok{+} 
+  \FunctionTok{geom\_line}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Function huber in X2"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{G64190069_latihan-praktikum-12_files/figure-latex/unnamed-chunk-13-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{M\_es\_hub }\OtherTok{\textless{}{-}} \FunctionTok{huber}\NormalTok{(x2, }\AttributeTok{k =} \FloatTok{1.345}\NormalTok{)}
+\NormalTok{M\_es\_hub}\SpecialCharTok{$}\NormalTok{mu}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1.687373
+\end{verbatim}
+
+\hypertarget{y1-1}{%
+\subsection{Y1}\label{y1-1}}
+
+\hypertarget{trimmed-mean-2}{%
+\subsubsection{Trimmed Mean}\label{trimmed-mean-2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{mean}\NormalTok{(y1,}\AttributeTok{trim =} \FloatTok{0.05}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.5074825
+\end{verbatim}
+
+\hypertarget{winsorzed-mean-2}{%
+\subsubsection{Winsorzed Mean}\label{winsorzed-mean-2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{winsor.mean}\NormalTok{(y1, }\AttributeTok{trim=}\FloatTok{0.05}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.504838
+\end{verbatim}
+
+\hypertarget{m-estimators-2}{%
+\subsubsection{M-Estimators}\label{m-estimators-2}}
+
+\hypertarget{huber-2}{%
+\paragraph{huber}\label{huber-2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fun\_hub\_y1 }\OtherTok{\textless{}{-}} \FunctionTok{psi.huber}\NormalTok{(y1, }\AttributeTok{k =} \FloatTok{1.345}\NormalTok{, }\AttributeTok{deriv =} \DecValTok{0}\NormalTok{)}
+\NormalTok{df\_hub\_y1 }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{xx=}\NormalTok{y1,}\AttributeTok{psi\_hub=}\NormalTok{fun\_hub\_y1)}
+\FunctionTok{ggplot}\NormalTok{(df\_hub\_y1,}\FunctionTok{aes}\NormalTok{(xx,psi\_hub)) }\SpecialCharTok{+} 
+  \FunctionTok{geom\_line}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Function huber in Y1"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{G64190069_latihan-praktikum-12_files/figure-latex/unnamed-chunk-16-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{M\_es\_hub }\OtherTok{\textless{}{-}} \FunctionTok{huber}\NormalTok{(y1, }\AttributeTok{k =} \FloatTok{1.345}\NormalTok{)}
+\NormalTok{M\_es\_hub}\SpecialCharTok{$}\NormalTok{mu}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.5045575
+\end{verbatim}
+
+\hypertarget{y2-1}{%
+\subsection{Y2}\label{y2-1}}
+
+\hypertarget{trimmed-mean-3}{%
+\subsubsection{Trimmed Mean}\label{trimmed-mean-3}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{mean}\NormalTok{(y2,}\AttributeTok{trim =} \FloatTok{0.05}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 9.939848
+\end{verbatim}
+
+\hypertarget{winsorzed-mean-3}{%
+\subsubsection{Winsorzed Mean}\label{winsorzed-mean-3}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{winsor.mean}\NormalTok{(y2, }\AttributeTok{trim=}\FloatTok{0.05}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 10.11176
+\end{verbatim}
+
+\hypertarget{m-estimators-3}{%
+\subsubsection{M-Estimators}\label{m-estimators-3}}
+
+\hypertarget{huber-3}{%
+\paragraph{huber}\label{huber-3}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fun\_hub\_y2 }\OtherTok{\textless{}{-}} \FunctionTok{psi.huber}\NormalTok{(y2, }\AttributeTok{k =} \FloatTok{1.345}\NormalTok{, }\AttributeTok{deriv =} \DecValTok{0}\NormalTok{)}
+\NormalTok{df\_hub\_y2 }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{xx=}\NormalTok{y2,}\AttributeTok{psi\_hub=}\NormalTok{fun\_hub\_y2)}
+\FunctionTok{ggplot}\NormalTok{(df\_hub\_y2,}\FunctionTok{aes}\NormalTok{(xx,psi\_hub)) }\SpecialCharTok{+} 
+  \FunctionTok{geom\_line}\NormalTok{() }\SpecialCharTok{+} \FunctionTok{ggtitle}\NormalTok{(}\StringTok{"Function huber in Y2"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{G64190069_latihan-praktikum-12_files/figure-latex/unnamed-chunk-19-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{M\_es\_hub }\OtherTok{\textless{}{-}} \FunctionTok{huber}\NormalTok{(y2, }\AttributeTok{k =} \FloatTok{1.345}\NormalTok{)}
+\NormalTok{M\_es\_hub}\SpecialCharTok{$}\NormalTok{mu}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 9.890736
+\end{verbatim}
+
+\hypertarget{nomor-3}{%
+\section{Nomor 3}\label{nomor-3}}
+
+IQR
+
+Berdasarkan
+\href{https://web.ipac.caltech.edu/staff/fmasci/home/astro_refs/RobustEstimators.pdf}{dari
+link ini}, Maka Sebelum kita menentukan nilai IQR dari suatu data, maka
+kita lihat distribusi apa yang cocok dengan data tersebut
+
+\hypertarget{x1-1}{%
+\subsection{X1}\label{x1-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{descdist}\NormalTok{(x1)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{G64190069_latihan-praktikum-12_files/figure-latex/unnamed-chunk-20-1.pdf}
+
+\begin{verbatim}
+## summary statistics
+## ------
+## min:  19.4353   max:  24.75342 
+## median:  20.51857 
+## mean:  21.02891 
+## estimated sd:  1.537735 
+## estimated skewness:  1.728735 
+## estimated kurtosis:  6.605395
+\end{verbatim}
+
+Dengan Menggunakan Graph Cullen and Frey graph, Maka kemungkinan
+distribusi x1 antara beta dan gamma. Tetapi dikarenakan error
+menggunakan Beta, maka bisa kita cek gamma. Tetapi sebelum itu, kita
+gunakan qqplot dahulu yaaa dengan distibusi normal terlebih dahulu
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# qqnorm(x1, pch = 1, frame = FALSE)}
+\CommentTok{\# qqline(x1, col = "steelblue", lwd = 2)}
+\FunctionTok{qqPlot}\NormalTok{(x1)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{G64190069_latihan-praktikum-12_files/figure-latex/unnamed-chunk-21-1.pdf}
+
+\begin{verbatim}
+## [1] 10  2
+\end{verbatim}
+
+Setelah diperhatikan, Sebenarnya distribusi ini mendekati normal, tetapi
+dikarenakan adanya outlier, maka jika kita test dengan ks.test
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit\_x1 }\OtherTok{\textless{}{-}} \FunctionTok{fitdist}\NormalTok{(x1,}\StringTok{"norm"}\NormalTok{)}
+\FunctionTok{summary}\NormalTok{(fit\_x1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Fitting of the distribution ' norm ' by maximum likelihood 
+## Parameters : 
+##       estimate Std. Error
+## mean 21.028911  0.4613204
+## sd    1.458823  0.3262021
+## Loglikelihood:  -17.96569   AIC:  39.93137   BIC:  40.53654 
+## Correlation matrix:
+##      mean sd
+## mean    1  0
+## sd      0  1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(fit\_x1)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{G64190069_latihan-praktikum-12_files/figure-latex/unnamed-chunk-22-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ks.test}\NormalTok{(x1,}\StringTok{"pnorm"}\NormalTok{,}\AttributeTok{mean=}\FloatTok{21.028911}\NormalTok{,}\AttributeTok{sd=}\FloatTok{1.458823}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  One-sample Kolmogorov-Smirnov test
+## 
+## data:  x1
+## D = 0.20699, p-value = 0.7123
+## alternative hypothesis: two-sided
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{shapiro.test}\NormalTok{(x1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  x1
+## W = 0.83965, p-value = 0.0437
+\end{verbatim}
+
+jika diperhatikan, jika ks.test normal, sedangkan shapiro-wilk test ini
+tidak normal, untuk p-value shapiro-wilk ini, mendekati normal, meskipun
+mendekati p-value.
+
+\textbf{X1 itu adalah Distribusi Normal (mean=21.028911,sd=1.458823)}
+
+\hypertarget{x2-2}{%
+\subsection{X2}\label{x2-2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{descdist}\NormalTok{(x2)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{G64190069_latihan-praktikum-12_files/figure-latex/unnamed-chunk-24-1.pdf}
+
+\begin{verbatim}
+## summary statistics
+## ------
+## min:  -2.991378   max:  7.526452 
+## median:  1.468013 
+## mean:  2.020437 
+## estimated sd:  2.802018 
+## estimated skewness:  0.3648262 
+## estimated kurtosis:  4.365285
+\end{verbatim}
+
+Disini, banyak sekali kemungkinan yaaa. jika diperhatikan, distribusinya
+ada logistic , atau mungkin lognormal. Kita cek qqplot yang logistic
+yaaa
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{qqPlot}\NormalTok{(x2,}\StringTok{"logis"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{G64190069_latihan-praktikum-12_files/figure-latex/unnamed-chunk-25-1.pdf}
+
+\begin{verbatim}
+## [1]  9 10
+\end{verbatim}
+
+Kemudian, kita lihat, bahwa x2 distribusi lognormal , jika diperhatikan,
+bahwa ada outlier yaaa. ada 2 outlier yaa, yang lain bisa dikatakan
+distribusi logistik
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit\_x2 }\OtherTok{\textless{}{-}} \FunctionTok{fitdist}\NormalTok{(x2,}\StringTok{"logis"}\NormalTok{)}
+\NormalTok{fit\_x2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Fitting of the distribution ' logis ' by maximum likelihood 
+## Parameters:
+##          estimate Std. Error
+## location 1.882585  0.7817310
+## scale    1.446234  0.3932554
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(fit\_x2)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{G64190069_latihan-praktikum-12_files/figure-latex/unnamed-chunk-26-1.pdf}
+Bisa dilihat bahwa sebenarnya data ini merupakan distribusi logistik
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ks.test}\NormalTok{(x2,}\StringTok{"plogis"}\NormalTok{,}\AttributeTok{location=}\FloatTok{1.882585}\NormalTok{,}\AttributeTok{scale=}\FloatTok{1.446234}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  One-sample Kolmogorov-Smirnov test
+## 
+## data:  x2
+## D = 0.19993, p-value = 0.7491
+## alternative hypothesis: two-sided
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{shapiro.test}\NormalTok{(x2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  x2
+## W = 0.93129, p-value = 0.4607
+\end{verbatim}
+
+jika diperhatikan, jika ks.test logis, sedangkan shapiro-wilk test ini
+tidak normal, berarti tepat bahwa data ini distribusi logistik dan juga
+bukan distribusi normal
+
+\textbf{X2 itu adalah Distribusi Logistik
+(location=1.882585,scale=1.446234)}
+
+\hypertarget{y1-2}{%
+\subsection{Y1}\label{y1-2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{descdist}\NormalTok{(y1)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{G64190069_latihan-praktikum-12_files/figure-latex/unnamed-chunk-28-1.pdf}
+
+\begin{verbatim}
+## summary statistics
+## ------
+## min:  -0.499999   max:  0.9888917 
+## median:  0.5144103 
+## mean:  0.4906979 
+## estimated sd:  0.3482005 
+## estimated skewness:  -0.5900393 
+## estimated kurtosis:  3.094567
+\end{verbatim}
+
+Bisa diperhatikan, bahwa Asumsi distribusi uniform, normal , gamma, dan
+logistik. berarti kita cek yahhh 4 distribusi, berarti kita cek yaaa
+dahulu uniform
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{qqPlot}\NormalTok{(y1,}\AttributeTok{distribution=}\StringTok{"unif"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{G64190069_latihan-praktikum-12_files/figure-latex/unnamed-chunk-29-1.pdf}
+
+\begin{verbatim}
+## [1] 100  99
+\end{verbatim}
+
+Jika diperhatikan, ada beberapa partikel yang melewati batas partikel
+yaaa. nah itu outlier yaaa, ada sedikit kesalahan disitu, kemudian
+hasilnya pada qqplot sudah pasti adalah distribusi uniform dikarenakan
+sudah tepat
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fit\_y1 }\OtherTok{\textless{}{-}} \FunctionTok{fitdist}\NormalTok{(y1,}\StringTok{"unif"}\NormalTok{)}
+\NormalTok{fit\_y1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Fitting of the distribution ' unif ' by maximum likelihood 
+## Parameters:
+##       estimate Std. Error
+## min -0.4999990         NA
+## max  0.9888917         NA
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(fit\_y1)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{G64190069_latihan-praktikum-12_files/figure-latex/unnamed-chunk-30-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ks.test}\NormalTok{(y1,}\StringTok{"punif"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  One-sample Kolmogorov-Smirnov test
+## 
+## data:  y1
+## D = 0.072115, p-value = 0.6758
+## alternative hypothesis: two-sided
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{shapiro.test}\NormalTok{(y1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  y1
+## W = 0.94574, p-value = 0.0004397
+\end{verbatim}
+
+\textbf{Y1 itu Distribusi Uniform (min=-0,4999990,max=0.3464552)}
+
+\hypertarget{y2-2}{%
+\subsection{Y2}\label{y2-2}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{descdist}\NormalTok{(y2)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{G64190069_latihan-praktikum-12_files/figure-latex/unnamed-chunk-32-1.pdf}
+
+\begin{verbatim}
+## summary statistics
+## ------
+## min:  2.279965   max:  48.86305 
+## median:  9.499855 
+## mean:  10.82127 
+## estimated sd:  7.081105 
+## estimated skewness:  3.10021 
+## estimated kurtosis:  16.07243
+\end{verbatim}
+
+bisa diperhatikan bahwa observasi ini, bisa gamma atau beta
+distribusinya, tapi kita cek dulu normal deh
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{fitdist}\NormalTok{(y2,}\StringTok{"gamma"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Fitting of the distribution ' gamma ' by maximum likelihood 
+## Parameters:
+##        estimate Std. Error
+## shape 3.6125932 0.48912413
+## rate  0.3338428 0.04849241
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(}\FunctionTok{fitdist}\NormalTok{(y2,}\StringTok{"gamma"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{G64190069_latihan-praktikum-12_files/figure-latex/unnamed-chunk-33-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# hubungan anatara gamma denganchisquare adalah sebagai berikut https://programmathically.com/chi{-}square{-}distribution{-}and{-}degrees{-}of{-}freedom/}
+\FunctionTok{ks.test}\NormalTok{(y2,}\StringTok{"pgamma"}\NormalTok{,}\AttributeTok{shape=}\DecValTok{5}\NormalTok{,}\AttributeTok{rate=}\FloatTok{0.5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  One-sample Kolmogorov-Smirnov test
+## 
+## data:  y2
+## D = 0.04966, p-value = 0.9661
+## alternative hypothesis: two-sided
+\end{verbatim}
+
+dikarenakan shape = 5 dan juga rate = 0.5 maka bisa dikatakan bahwa
+shape =5 dengan syarat rate=0.5 --\textgreater{} df = 10
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ks.test}\NormalTok{(y2,}\StringTok{"pchisq"}\NormalTok{,}\AttributeTok{df=}\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  One-sample Kolmogorov-Smirnov test
+## 
+## data:  y2
+## D = 0.04966, p-value = 0.9661
+## alternative hypothesis: two-sided
+\end{verbatim}
+
+Setelah diujicoba dan diperhatikan dengan seksama , maka hasilnya adalah
+
+\textbf{Y2 in distribution Chi Square (df=10)}
+
+\hypertarget{perhitungan-iqr}{%
+\section{Perhitungan IQR}\label{perhitungan-iqr}}
+
+Rujukan adalah
+\href{https://dc.etsu.edu/cgi/viewcontent.cgi?article=2187\&context=etd}{link
+ini ya}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  X1 Distribusi Normal (mean=21.028911,sd=1.458823)
+\item
+  X2 Distribusi Logistik (location=1.882585,scale=1.446234)
+\item
+  Y1 Distribusi Uniform (min=-0,4999990,max=0.3464552)
+\item
+  Y2 Distribusi Chisquare (df=10)
+\end{enumerate}
+
+\hypertarget{x1-2}{%
+\subsection{X1}\label{x1-2}}
+
+Nilai IQR dari X1 adalah
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Dikarenakan Normal maka Formulanya }
+\DocumentationTok{\#\# IQRnorm ≈ 1.34900σ}
+\NormalTok{IQR\_X1 }\OtherTok{\textless{}{-}} \FloatTok{1.349}\SpecialCharTok{*}\FunctionTok{sd}\NormalTok{(x1)}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{\textquotesingle{}IQR\_X1 =\textquotesingle{}}\NormalTok{,IQR\_X1,}\AttributeTok{sep=}\StringTok{\textquotesingle{} \textquotesingle{}}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "IQR_X1 = 2.0744039770859"
+\end{verbatim}
+
+\hypertarget{x2-3}{%
+\subsection{X2}\label{x2-3}}
+
+Nilai IQR dari X2 adalah
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Dikarenakan Logistic maka Formulanya }
+\NormalTok{IQR\_X2 }\OtherTok{\textless{}{-}} \FunctionTok{IQR}\NormalTok{(x2)}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{\textquotesingle{}IQR\_X2 =\textquotesingle{}}\NormalTok{,IQR\_X2,}\AttributeTok{sep=}\StringTok{\textquotesingle{} \textquotesingle{}}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "IQR_X2 = 2.52318627238694"
+\end{verbatim}
+
+\hypertarget{y1-3}{%
+\subsection{Y1}\label{y1-3}}
+
+Nilai IQR dari Y1 adalah
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Dikarenakan Logistic maka Formulanya }
+\DocumentationTok{\#\# IQRunif ≈ 0.5(θ2 {-} θ1)}
+\NormalTok{IQR\_Y1 }\OtherTok{\textless{}{-}} \FloatTok{0.5}\SpecialCharTok{*}\NormalTok{(}\FloatTok{0.3464552}\SpecialCharTok{{-}}\NormalTok{(}\SpecialCharTok{{-}}\FloatTok{0.4999990}\NormalTok{))}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{\textquotesingle{}IQR\_Y1 =\textquotesingle{}}\NormalTok{,IQR\_Y1,}\AttributeTok{sep=}\StringTok{\textquotesingle{} \textquotesingle{}}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "IQR_Y1 = 0.4232271"
+\end{verbatim}
+
+\hypertarget{y2-3}{%
+\subsection{Y2}\label{y2-3}}
+
+Nilai IQR dari Y2 adalah
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Dikarenakan Logistic maka Formulanya }
+\DocumentationTok{\#\# IQRunif ≈ 2(e\^{}µ)sinh(0.6745σ)}
+\NormalTok{IQR\_Y2 }\OtherTok{\textless{}{-}} \FunctionTok{IQR}\NormalTok{(y2)}
+\FunctionTok{print}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{\textquotesingle{}IQR\_Y2 =\textquotesingle{}}\NormalTok{,IQR\_Y2,}\AttributeTok{sep=}\StringTok{\textquotesingle{} \textquotesingle{}}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "IQR_Y2 = 6.51586843556726"
+\end{verbatim}
+
+Jika diperhatikan bahwa hasil IQR itu sendiri adalah tidak berpengaruh
+terhadap pencilan dikarenakan data tersebut adalah pada quartil 1 dan 3,
+sehingga pencilan tidak dianggap.
+
+\end{document}

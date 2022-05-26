@@ -1,0 +1,396 @@
+---
+title: "G64190069_latihan praktikum 12"
+author: "Rizal Mujahiddan"
+date: "5/17/2022"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+``` {r echo = T, results = 'hide'}
+library(readxl)
+library(EnvStats)
+library(MASS)
+library(fitdistrplus)
+library(ggplot2)
+library(psych)
+library(car)
+```
+
+
+# Nomor 1
+
+Untuk Nomor 1, Dipergunakan methode mendeteksi pencilan dengan eksplorasi data dengan menggunakan boxplot dengan IQR = 1.5
+
+
+```{r}
+
+data_sheet1 <- read_excel("Data praktikum 12.xlsx",sheet="data 100")
+data_sheet2 <- read_excel("Data praktikum 12.xlsx",sheet="data 10")
+
+x1 <- data_sheet2$x1
+x2 <- data_sheet2$x2
+y1 <- data_sheet1$y1
+y2 <- data_sheet1$y2
+
+
+par(mfrow=c(1,2))
+boxplot(x1,main="x1")
+boxplot(x2,main="x2")
+
+```
+## X1
+ada satu outlier yang terlihat, kemudian jika diperhatikan kembali, maka hasilnya cenderung menjulur ke kanan
+
+
+
+
+### rosnerTest
+```{r}
+
+ros_x1 <- rosnerTest(x1,k=4)
+allstat_ros <- ros_x1$all.stats
+vec_x1_ros <- x1[allstat_ros[allstat_ros['Outlier']==TRUE,'Obs.Num']]
+vec_x1_ros
+```
+
+
+## X2
+Tidak outlier yang terlihat, Kemudian Disini maka cenderung menyebar normal tetapi mean agak bergeser ke kiri
+
+```{r}
+
+ros_x2 <- rosnerTest(x2,k=5)
+allstat_ros <- ros_x2$all.stats
+vec_x2_ros <- x2[allstat_ros[allstat_ros['Outlier']==TRUE,'Obs.Num']]
+vec_x2_ros
+```
+
+
+
+```{r}
+par(mfrow=c(1,2))
+boxplot(y1,main="y1")
+boxplot(y2,main="y2")
+```
+
+## Y1
+ada satu outlier yang terlihat, kemudian jika diperhatikan kembali, median ada di sebelah kenan
+
+```{r}
+
+ros_y1 <- rosnerTest(y1,k=5)
+allstat_ros <- ros_y1$all.stats
+vec_y1_ros <- y1[allstat_ros[allstat_ros['Outlier']==TRUE,'Obs.Num']]
+vec_y1_ros
+```
+
+
+## Y2
+Tidak outlier yang terlihat, Kemudian Disini maka cenderung menjulur ke kanan
+
+
+```{r}
+
+ros_y2 <- rosnerTest(y1,k=5)
+allstat_ros <- ros_y1$all.stats
+vec_y2_ros <- y1[allstat_ros[allstat_ros['Outlier']==TRUE,'Obs.Num']]
+vec_y2_ros
+```
+
+
+# Nomor 2
+
+
+## X1
+
+### Trimmed Mean
+```{r}
+mean(x1,trim = 0.05)
+```
+
+### Winsorzed Mean
+
+```{r}
+
+winsor.mean(x1, trim=0.05)
+```
+
+### M-Estimators
+
+#### huber
+```{r}
+
+
+fun_hub_x1 <- psi.huber(x1, k = 1.345, deriv = 0)
+df_hub_x1 <- data.frame(xx=x1,psi_hub=fun_hub_x1)
+ggplot(df_hub_x1,aes(xx,psi_hub)) + 
+  geom_line() + ggtitle("Function huber in X1")
+M_es_hub <- huber(x1, k = 1.345)
+M_es_hub$mu
+
+```
+
+
+
+## X2
+
+### Trimmed Mean
+```{r}
+mean(x2,trim = 0.05)
+```
+
+### Winsorzed Mean
+
+```{r}
+
+winsor.mean(x2, trim=0.05)
+```
+
+
+### M-Estimators
+
+#### huber
+```{r}
+
+
+fun_hub_x2 <- psi.huber(x2, k = 1.345, deriv = 0)
+df_hub_x2 <- data.frame(xx=x2,psi_hub=fun_hub_x2)
+ggplot(df_hub_x2,aes(xx,psi_hub)) + 
+  geom_line() + ggtitle("Function huber in X2")
+M_es_hub <- huber(x2, k = 1.345)
+M_es_hub$mu
+```
+
+
+
+## Y1
+
+### Trimmed Mean
+```{r}
+mean(y1,trim = 0.05)
+```
+
+### Winsorzed Mean
+
+```{r}
+
+winsor.mean(y1, trim=0.05)
+```
+
+
+### M-Estimators
+
+#### huber
+```{r}
+
+
+fun_hub_y1 <- psi.huber(y1, k = 1.345, deriv = 0)
+df_hub_y1 <- data.frame(xx=y1,psi_hub=fun_hub_y1)
+ggplot(df_hub_y1,aes(xx,psi_hub)) + 
+  geom_line() + ggtitle("Function huber in Y1")
+M_es_hub <- huber(y1, k = 1.345)
+M_es_hub$mu
+```
+
+## Y2
+
+### Trimmed Mean
+```{r}
+mean(y2,trim = 0.05)
+```
+### Winsorzed Mean
+
+```{r}
+
+winsor.mean(y2, trim=0.05)
+```
+### M-Estimators
+
+#### huber
+```{r}
+
+
+fun_hub_y2 <- psi.huber(y2, k = 1.345, deriv = 0)
+df_hub_y2 <- data.frame(xx=y2,psi_hub=fun_hub_y2)
+ggplot(df_hub_y2,aes(xx,psi_hub)) + 
+  geom_line() + ggtitle("Function huber in Y2")
+M_es_hub <- huber(y2, k = 1.345)
+M_es_hub$mu
+```
+
+
+# Nomor 3
+###### IQR
+Berdasarkan [dari link ini](https://web.ipac.caltech.edu/staff/fmasci/home/astro_refs/RobustEstimators.pdf), Maka Sebelum kita menentukan nilai IQR dari suatu data, maka kita lihat distribusi apa yang cocok dengan data tersebut 
+
+## X1
+```{r}
+descdist(x1)
+```
+Dengan Menggunakan Graph Cullen and Frey graph, Maka kemungkinan distribusi x1 antara beta dan gamma. Tetapi dikarenakan error menggunakan Beta, maka bisa kita cek gamma. Tetapi sebelum itu, kita gunakan qqplot dahulu yaaa dengan distibusi normal terlebih dahulu
+
+```{r}
+
+# qqnorm(x1, pch = 1, frame = FALSE)
+# qqline(x1, col = "steelblue", lwd = 2)
+qqPlot(x1)
+```
+Setelah diperhatikan, Sebenarnya distribusi ini mendekati normal, tetapi dikarenakan adanya outlier, maka jika kita test dengan ks.test
+
+
+
+```{r}
+fit_x1 <- fitdist(x1,"norm")
+summary(fit_x1)
+plot(fit_x1)
+```
+
+```{r}
+ks.test(x1,"pnorm",mean=21.028911,sd=1.458823)
+shapiro.test(x1)
+```
+jika diperhatikan, jika ks.test normal, sedangkan shapiro-wilk test ini tidak normal, untuk p-value shapiro-wilk ini, mendekati normal, meskipun mendekati p-value.<br>
+
+**X1 itu adalah Distribusi Normal (mean=21.028911,sd=1.458823)**
+
+## X2
+```{r}
+descdist(x2)
+```
+Disini, banyak sekali kemungkinan yaaa. jika diperhatikan, distribusinya ada logistic , atau mungkin lognormal. Kita cek qqplot yang logistic yaaa
+
+
+```{r}
+qqPlot(x2,"logis")
+```
+Kemudian, kita lihat, bahwa x2 distribusi lognormal , jika diperhatikan, bahwa ada outlier yaaa. ada 2 outlier yaa, yang lain bisa dikatakan distribusi logistik 
+
+
+```{r}
+fit_x2 <- fitdist(x2,"logis")
+fit_x2
+plot(fit_x2)
+```
+Bisa dilihat bahwa sebenarnya data ini merupakan distribusi logistik
+
+
+```{r}
+ks.test(x2,"plogis",location=1.882585,scale=1.446234)
+shapiro.test(x2)
+```
+jika diperhatikan, jika ks.test logis, sedangkan shapiro-wilk test ini tidak normal, berarti tepat bahwa data ini distribusi logistik dan juga bukan distribusi normal
+
+**X2 itu adalah Distribusi Logistik (location=1.882585,scale=1.446234)**
+
+## Y1
+```{r}
+descdist(y1)
+```
+Bisa diperhatikan, bahwa Asumsi distribusi uniform, normal , gamma, dan logistik.
+berarti kita cek yahhh 4 distribusi, berarti kita cek yaaa dahulu uniform
+
+```{r}
+qqPlot(y1,distribution="unif")
+```
+Jika diperhatikan, ada beberapa partikel yang melewati batas partikel yaaa. nah itu outlier yaaa, ada sedikit kesalahan disitu, kemudian hasilnya pada qqplot sudah pasti adalah distribusi uniform dikarenakan sudah tepat
+
+```{r}
+fit_y1 <- fitdist(y1,"unif")
+fit_y1
+plot(fit_y1)
+```
+
+
+```{r}
+ks.test(y1,"punif")
+shapiro.test(y1)
+```
+
+
+**Y1 itu Distribusi Uniform (min=-0,4999990,max=0.3464552)**
+
+## Y2
+
+```{r}
+descdist(y2)
+```
+bisa diperhatikan bahwa observasi ini, bisa gamma atau beta distribusinya, tapi kita cek dulu normal deh
+
+
+```{r}
+fitdist(y2,"gamma")
+plot(fitdist(y2,"gamma"))
+```
+
+```{r}
+
+## hubungan anatara gamma denganchisquare adalah sebagai berikut https://programmathically.com/chi-square-distribution-and-degrees-of-freedom/
+ks.test(y2,"pgamma",shape=5,rate=0.5)
+```
+dikarenakan shape = 5 dan juga rate = 0.5
+maka bisa dikatakan bahwa shape =5 dengan syarat rate=0.5 --> df = 10
+
+
+```{r}
+ks.test(y2,"pchisq",df=10)
+```
+
+Setelah diujicoba dan diperhatikan dengan seksama , maka hasilnya adalah 
+
+**Y2 in distribution Chi Square (df=10)**
+
+
+# Perhitungan IQR
+
+Rujukan adalah [link ini ya](https://dc.etsu.edu/cgi/viewcontent.cgi?article=2187&context=etd) <br>
+
+1. X1 Distribusi Normal    (mean=21.028911,sd=1.458823)
+2. X2 Distribusi Logistik  (location=1.882585,scale=1.446234)
+3. Y1 Distribusi Uniform   (min=-0,4999990,max=0.3464552)
+4. Y2 Distribusi Chisquare (df=10)
+
+## X1
+
+Nilai IQR dari X1 adalah 
+```{r}
+## Dikarenakan Normal maka Formulanya 
+## IQRnorm ≈ 1.34900σ
+IQR_X1 <- 1.349*sd(x1)
+print(paste('IQR_X1 =',IQR_X1,sep=' '))
+```
+
+## X2
+Nilai IQR dari X2 adalah 
+```{r}
+## Dikarenakan Logistic maka Formulanya 
+IQR_X2 <- IQR(x2)
+print(paste('IQR_X2 =',IQR_X2,sep=' '))
+```
+
+## Y1
+Nilai IQR dari Y1 adalah 
+```{r}
+## Dikarenakan Logistic maka Formulanya 
+## IQRunif ≈ 0.5(θ2 - θ1)
+IQR_Y1 <- 0.5*(0.3464552-(-0.4999990))
+print(paste('IQR_Y1 =',IQR_Y1,sep=' '))
+```
+## Y2
+Nilai IQR dari Y2 adalah 
+```{r}
+## Dikarenakan Logistic maka Formulanya 
+## IQRunif ≈ 2(e^µ)sinh(0.6745σ)
+IQR_Y2 <- IQR(y2)
+print(paste('IQR_Y2 =',IQR_Y2,sep=' '))
+```
+
+Jika diperhatikan bahwa hasil IQR itu sendiri adalah tidak berpengaruh terhadap pencilan dikarenakan data tersebut adalah pada quartil 1 dan 3, sehingga pencilan tidak dianggap.
+
+
+
+

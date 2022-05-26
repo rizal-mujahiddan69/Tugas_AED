@@ -1,0 +1,205 @@
+---
+title: "Untitled"
+author: "Rizal Mujahiddan"
+date: "5/25/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#  Nomor 1
+## Generate Data Normal
+```{r}
+set.seed(1234)
+data_100_1 <- rnorm(100,mean=10,sd=5)
+data_100_1
+```
+## Boxplot
+```{r}
+boxplot(data_100_1,horizontal = TRUE,
+        main="Boxplot Nomor 1")
+```
+
+## Summary
+```{r}
+summary(data_100_1)
+```
+
+
+
+#  Nomor 2
+## Add Pencilan
+```{r}
+set.seed(1234)
+data_100_2 <- c(data_100_1,30,35,40)
+data_100_2
+```
+
+## Boxplot Nomor 2
+```{r}
+boxplot(data_100_2,horizontal=TRUE,
+        main="Boxplot Nomor 2")
+```
+##
+```{r}
+summary(data_100_2)
+```
+
+
+#  Nomor 3
+## Generate Data 
+```{r}
+set.seed(1234)
+data_100_3 <- c(data_100_1,-30,-35,-40)
+data_100_3
+```
+
+## Boxplot Nomor 3
+```{r}
+boxplot(data_100_3,
+        horizontal = TRUE,
+        main="Boxplot Nomor 3")
+```
+
+## Summary Nomor 3
+```{r}
+summary(data_100_3)
+```
+
+#  Nomor 4
+## Generate data
+```{r}
+data_100_4 <- c(-30,-35,-40,data_100_1,30,35,40)
+data_100_4
+```
+## boxplot
+```{r}
+boxplot(data_100_4,main="Boxplot Nomor 4",horizontal = TRUE)
+```
+
+## summary
+```{r}
+summary(data_100_4)
+```
+
+#  Nomor 5
+## Generate data
+```{r}
+set.seed(1234)
+data_10_5 <- rnorm(10,mean=10,sd=5)
+data_10_5
+```
+
+## Boxplot
+```{r}
+boxplot(data_10_5,main="Boxplot Nomor 5",horizontal = TRUE)
+```
+
+## Summary
+```{r}
+summary(data_100_5)
+```
+
+#  Nomor 6
+## Generate
+```{r}
+data_10_6 <- c(data_10_5,30,35)
+data_10_6
+```
+
+## Boxplot
+```{r}
+boxplot(data_10_6,main="Boxplot Nomor 6",horizontal=TRUE)
+```
+
+## Summary
+```{r}
+summary(data_10_6)
+```
+
+# Nomor 7
+## Generate data
+```{r}
+data_10_7 <- c(-30,-35,data_10_5)
+data_10_7
+```
+
+## Boxplot
+```{r}
+boxplot(data_10_7,horizontal = TRUE,main="Boxplot Nomor 7")
+```
+
+## Summary
+```{r}
+summary(data_10_7)
+```
+
+#  Nomor 8
+## Generate data
+```{r}
+data_10_8 <- c(-30,-35,data_10_5,30,35)
+data_10_8
+```
+
+## Boxplot
+```{r}
+boxplot(data_10_8)
+```
+
+## Summary
+```{r}
+summary(data_10_8)
+```
+
+
+## imputation to missing value in data vector
+### 100
+```{r}
+library(openxlsx)
+panjangkolom_100 <- c(length(data_100_1),length(data_100_2),
+                      length(data_100_3),length(data_100_4))
+data_100_li <- list( data_100_1 = data_100_1,data_100_2 = data_100_2,
+                  data_100_3 = data_100_3,data_100_4 = data_100_4)
+
+max_panjangkolom_100 <- max(panjangkolom_100)
+
+for(i in names(data_100_li)){
+  if(length(data_100_li[[i]]) < max_panjangkolom_100){
+    data_100_li[[i]] <- c(data_100_li[[i]] , 
+                          rep(NA,max_panjangkolom_100 - length(data_100_li[[i]])))
+  }
+}
+
+data_100 <- data.frame(data_100_li)
+data_100
+```
+
+### 10
+```{r}
+library(openxlsx)
+panjangkolom_10 <- c(length(data_10_5),length(data_10_6),
+                      length(data_10_7),length(data_10_8))
+data_10_li <- list(data_10_5 = data_10_5,data_10_6 = data_10_6,
+                  data_10_7 = data_10_7,data_10_8 = data_10_8)
+
+max_panjangkolom_10 <- max(panjangkolom_10)
+
+for(i in names(data_10_li)){
+  if(length(data_10_li[[i]]) < max_panjangkolom_10){
+    data_10_li[[i]] <- c(data_10_li[[i]] ,
+                         rep(NA,max_panjangkolom_10 - length(data_10_li[[i]])))
+  }
+}
+
+data_10 <- data.frame(data_10_li)
+data_10
+```
+
+## Writing xlsx file
+```{r}
+dataset_names <- list('Data_banyaknya_100' = data_100, 'Data_banyaknya_10' = data_10)
+write.xlsx(dataset_names, file = 'G64190069_Rizal Mujahiddan.xlsx')
+```
+
