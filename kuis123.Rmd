@@ -33,7 +33,7 @@ summary(data_100_1)
 ## Add Pencilan
 ```{r}
 set.seed(1234)
-data_100_2 <- c(data_100_1,30,35,40)
+data_100_2 <- c(data_100_1,30,35,40,45,50)
 data_100_2
 ```
 
@@ -52,7 +52,7 @@ summary(data_100_2)
 ## Generate Data 
 ```{r}
 set.seed(1234)
-data_100_3 <- c(data_100_1,-30,-35,-40)
+data_100_3 <- c(data_100_1,-30,-35,-40,-45,-50)
 data_100_3
 ```
 
@@ -71,7 +71,7 @@ summary(data_100_3)
 #  Nomor 4
 ## Generate data
 ```{r}
-data_100_4 <- c(-30,-35,-40,data_100_1,30,35,40)
+data_100_4 <- c(-40,-35,-30,-35,-40,data_100_1,30,35,40,45,50)
 data_100_4
 ```
 ## boxplot
