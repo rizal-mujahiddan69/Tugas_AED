@@ -1,0 +1,452 @@
+---
+title: "G64190069_Rizal Mujahiddan_tugas akhir AED"
+author: "Rizal Mujahiddan"
+date: "6/8/2022"
+output:
+  powerpoint_presentation: default
+  beamer_presentation: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r echo=FALSE,message=FALSE}
+library(visdat)
+library(ggplot2)
+library(tidyverse)
+library(forcats)
+library(stringr)
+library(corrplot)
+
+library(RColorBrewer)
+library(ggmap)
+library(maps)
+library(rgdal)
+library(scales)
+library(maptools)
+library(gridExtra)
+library(rgeos)
+```
+
+
+# Perkenalan
+Rizal Mujahiddan\
+G64190069\
+P1 AED\
+\
+10 Juni 2022
+
+# Perkenalan Data
+Data ini berasal dari situs kaggle yang berjudul [**Salary Dataset - 2022**](https://www.kaggle.com/datasets/iamsouravbanerjee/software-professional-salaries-2022?select=Salary_Dataset_with_Extra_Features.csv). data ini menceritakan mengenai pekerjaan _software engineering_ dan pendapatannya di India pada tahun 2021
+
+# Deskripsi Data
+Data ini memiliki nama atribut 
+```{r echo=FALSE,eval=TRUE}
+my_data <- read.csv("Salary_Dataset.csv")
+print(paste(dim(my_data)[1],"records and",dim(my_data)[2],"columns"))
+```
+* Company Rating             : Rating pekerjaan di suatu tempat 
+* Company Name               : Nama Perusahaan 
+* Job Title                  : Nama Pekerjaan
+* Salary (Indian Rupee - ₹)) : Gaji dalam Rupee
+* Salaries Reported          : Gaji yang dilaporkan
+* Location                   : Tempat Perusahaan
+
+# Summary Data
+
+font_size_kecil
+```{r echo=FALSE,size='tiny'}
+summary(my_data)
+```
+
+
+# Missing Value Plot
+```{r echo=FALSE,eval=TRUE,warning=FALSE}
+visdat::vis_miss(my_data) + 
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 60)) +
+  ggplot2::ggtitle("Missing Value Plot in Salary Dataset")
+```
+
+
+# Missing Value Plot
+* Jika diperhatikan maka Tidak ada missing value
+* Tidak perlu praprocessing data mengenai handling missing value
+
+# Selection Between categoric and numerical
+```{r echo=FALSE}
+name_kol_num  <- names(lapply(my_data,
+                         class)[which(lapply(my_data,
+                                             class) %in% c("numeric",
+                                                           "integer"))])
+name_kol_nama <- names(lapply(my_data,
+                         class)[which(lapply(my_data,
+                                             class) %in% c("character"))])
+print("column name of numeric")
+print(name_kol_num)
+cat("\n")
+
+print("column name of categoric")
+print(name_kol_nama)
+```
+
+
+```{r,include=FALSE}
+my_data$Location          <- as.factor(my_data$Location)
+my_data$Employment.Status <- factor(my_data$Employment.Status,
+                                    levels=c("Intern","Trainee",
+                                             "Contractor","Full Time"))
+my_data$Job.Roles         <- as.factor(my_data$Job.Roles)
+```
+
+# Density Plot numeric attribute
+:::::: {.columns}
+::: {.column}
+```{r echo=FALSE}
+print(ggplot(my_data,aes(x=Rating)) + 
+          geom_density() + ggtitle(paste("Density Plot in","Rating"))
+          )
+```
+:::
+
+::: {.column}
+* Distribusi cenderung menjulur ke kiri
+* cenderung memiliki puncak mendekati 4 sehingga rata rata atau modus mendekati 4
+* Distribusinya bukanlah normal
+* Rating perusahaan tersebut lumayan bagus, dengan kebanyakan yakni 4
+* disinilah dengan rata rata 3.918, maka sebaiknya. dengan adanya perusahaan tersebut harus dinaikkan melebihi 4
+:::
+::::::
+
+
+:::::: {.columns}
+::: {.column}
+```{r echo=FALSE}
+print(ggplot(my_data,aes(x=Salary)) + 
+          geom_density() + ggtitle(paste("Density Plot in","Salary"))
+          )
+```
+:::
+
+::: {.column}
+* Distribusi cenderung menjulur ke kanan
+* Median 500000
+* Mean   695387
+* Distribusinya bukanlah normal
+* Kebanyakan Pekerja IT Digaji rata rata Rupee ₹695.387,00 yang dimana melebihi gaji minimum india ₹4.500,00 per bulan.
+* Bahkan melebihi karyawan biasa ₹80.000 per bulan, 
+* Secara grafik ini. menjadi pekerja IT di India sangatlah menguntungkan dibandingkan pekerjaan yang lain
+:::
+::::::
+
+
+:::::: {.columns}
+::: {.column}
+```{r echo=FALSE}
+print(ggplot(my_data,aes(x=Salaries.Reported)) + 
+          geom_density() + ggtitle(paste("Density Plot in","Salaries.Reported"))
+          )
+```
+:::
+
+::: {.column}
+* Distribusi cenderung menjulur ke kanan
+* Median 1.000   
+* Mean   1.856
+* Distribusinya bukanlah normal
+* jika diperhatikan, para karyawan kurang terbuka terhadap gajinya terbukti hanya sedikit laporan gaji karyawan
+:::
+::::::
+
+
+# Barplot Data Kategorik
+
+:::::: {.columns}
+::: {.column}
+```{r echo=FALSE}
+ggplot(my_data,aes(x=fct_infreq(Job.Roles),fill=Job.Roles)) + 
+  geom_bar() + theme(axis.text.x = element_text(angle=20)) +
+  ggtitle("Penyebaran pekerjaan IT di India")
+```
+
+:::
+
+::: {.column}
+* Jika diperhatikan, Banyak berkutat di dalam Software Developer Engineering dikarenakan pada saat ini, start up ini membutuhkan aplikasi maupun situs yang membranding suatu produk tersebut.
+* Yang Paling kecil adalah Mobile
+* Mobile disini sebenarnya hampir mirip dengan android, tetapi agak berbeda dikarenakan tidak semua mobile merupakan sistem OS android
+* Jika dilihat dari barplot, bahwa IT itu lebih identik Software Developer Engineering itu benar
+:::
+::::::
+
+
+
+:::::: {.columns}
+::: {.column}
+```{r}
+print(ggplot2::ggplot(my_data,
+                ggplot2::aes(x= forcats::fct_infreq(Location),
+                             fill=Location)) +
+  ggplot2::geom_bar() + ggplot2::theme(axis.text.x = element_text(angle=25)) +
+  ggplot2::ggtitle("Penyebaran Lokasi kota pada Pekerja IT di India"))
+```
+
+:::
+
+::: {.column}
+* Jika diperhatikan, Banyak berkutat di dalam Software Developer Engineering dikarenakan pada saat ini, start up ini membutuhkan aplikasi maupun situs yang membranding suatu produk tersebut.
+* Yang Paling kecil adalah Mobile
+* Mobile disini sebenarnya hampir mirip dengan android, tetapi agak berbeda dikarenakan tidak semua mobile merupakan sistem OS android
+* Jika dilihat dari barplot, bahwa IT itu lebih identik Software Developer Engineering itu benar
+:::
+::::::
+
+
+:::::: {.columns}
+::: {.column}
+```{r}
+ggplot(my_data,aes(x= fct_infreq(Employment.Status),fill=Employment.Status,
+                   color=Employment.Status)) + geom_bar()
+```
+
+:::
+
+::: {.column}
+* Sudah Banyak pekerja yang Full time
+* Sedikit yang menjadi trainee
+* Berarti kebanyakan pekerja lebih baik menjadi intern dibanding trainee
+:::
+::::::
+
+
+```{r,include=FALSE}
+# my_data <- my_data %>% 
+#   mutate(Job.Title = replace(Job.Title,
+#                              str_detect(Job.Title,
+#                                         "Android Developer(.)*")==TRUE ,
+#                              "Android Developer"))
+# my_data <- my_data %>% 
+#   mutate(Job.Title = replace(Job.Title,
+#                              str_detect(Job.Title,
+#                                         "Android Applications Developer(.)*")==TRUE,
+#                              "Android Applications Developer"))
+# 
+# my_data <- my_data %>% 
+#   mutate(Job.Title = replace(Job.Title,
+#                              str_detect(Job.Title,
+#                                         "Backend Developer(.)*")==TRUE,
+#                              "Backend Developer"))
+# my_data <- my_data %>% 
+#   mutate(Job.Title = replace(Job.Title,
+#                              str_detect(Job.Title,
+#                                         "(.)*Database Administrator(.)*")==TRUE,
+#                              "Database Administrator"))
+# 
+# my_data <- my_data %>% 
+#   mutate(Job.Title = replace(Job.Title,
+#                              str_detect(Job.Title,
+#                                         "Web Developer(.)*")==TRUE,
+#                              "Web Developer"))
+# unique(my_data$Job.Title)
+```
+
+
+# Scatterplot
+:::::: {.columns}
+::: {.column}
+```{r echo=FALSE}
+ggplot(my_data,aes(x=Rating,y=Salary,color=Location,shape=Employment.Status)) + 
+  geom_point() + ggtitle("Relevant rating, salary, employement, and Location")
+```
+
+:::
+
+::: {.column}
+* Banyak pekerja IT yang dominina di kota Bangalore,
+* Fulltime cenderung lebih tinggi gajinya dibanding status yang lain
+* Hubungan Rating dengan Salary itu sendiri tidak berkorelasi dibuktikan hanya sedikit perubahan kemiringannya
+* Ada outlier, kira kira di New Delhi dengan gaji kira kira ₹90.000.000 dengan Profesi Software Developer Engineering, Bekerja di Thapar University.
+:::
+::::::
+
+
+
+```{r warning=FALSE,message=FALSE}
+india_states_shape = readShapeSpatial("India_Map/IND_adm2.shp")
+# plot(states_shape,main="Peta Kota di Negara India")
+india_states_ogr <- readOGR(dsn="India_Map",layer="IND_adm2")
+# str(india_states_ogr)
+```
+
+
+```{r}
+State_count = length(india_states_shape$NAME_2)
+score = rep(0,State_count)
+
+State_data = data.frame(id=india_states_shape$ID_2,
+                        NAME_2=india_states_shape$NAME_2, score)
+loc_sal <- my_data %>% 
+            group_by(Location) %>%
+            summarise(rata_gaji = mean(Salary))
+
+# print(unique(my_data$Location))
+# my_data <- my_data %>%                               # Replacing values
+#   mutate(Location = replace(Location, Location == "Madhya Pradesh", "Bhopal"))
+# print(unique(my_data$Location))
+
+# ga <- 0
+
+for(ii in loc_sal$Location){
+  State_data[which(str_detect(State_data$NAME_2,
+                              paste(ii,"(.)*",sep=""))), "score"] <- loc_sal[which(loc_sal$Location == ii), "rata_gaji"]
+  # if( any(str_detect(State_data$NAME_2,paste(ii,"(.)*",sep="")))==TRUE){
+  #   ga <- ga + 1 
+  #   # print(ii)
+  # } else{
+  #   print(ii)
+  # }
+}
+```
+
+# Peta Penyebaran Pekerja IT di India
+```{r}
+fortify_shape = fortify(india_states_shape, region = "ID_2")
+Merged_data = merge(fortify_shape, State_data, by="id", all.x=TRUE)
+Map_plot = Merged_data[order(Merged_data$order), ]
+ggplot() + 
+  geom_polygon(data = Map_plot,
+               aes(x = long, y = lat, group = group, fill = score),
+               color = "black", size = 0.05) + coord_map() +
+  scale_fill_gradient(low="#FFFFFF",high="#00FFFF") +
+  ggtitle("Peta Penyebaran Pekerja IT di India")
+```
+
+* Jika diperhatikan, ada daerah yang dekat berwarna biru ya. tetapi dikarenakan datanya yang kurang, maka hasilnya hanya segitu saja
+
+# group in barplot
+:::::: {.columns}
+::: {.column}
+```{r}
+print(ggplot(my_data,aes(x= fct_infreq(Location),fill=Employment.Status)) +
+        geom_bar(position="dodge") + 
+        theme(axis.text.x = element_text(angle=25)) +
+        ggtitle("Penyebaran Lokasi kota pada Pekerja IT di India") 
+      )
+```
+:::
+
+::: {.column}
+* Full Time yang mendominasi di setiap kotanya
+* yang kedua, cenderung lebih ke intern
+* yang ketiga, Contractor
+* yang paling sedikit di setiap kotanya yakni Trainee
+* yang bisa disimpulkan, bahwa perusahaan IT di India membutuhkan Full time dibandingkan yang lain
+* dan juga lebih baik Intern dibandingkan training untuk Trainee
+:::
+::::::
+
+
+
+# Relation Jobroles, Location and Salary
+:::::: {.columns}
+::: {.column}
+```{r,message=FALSE,warning=FALSE}
+rata_job_loc <-my_data %>% 
+  group_by(Job.Roles,Location) %>% 
+  summarise(rata_gaji = mean(Salary))
+# print(rata_job_loc)
+ggplot(rata_job_loc,aes(x=Location,y=rata_gaji,fill=Job.Roles)) + geom_bar(stat='identity',position='dodge') + 
+  theme(axis.text.x = element_text(angle=20)) +
+  ggtitle("Gaji di setiap kota dan peran pekerjaan")
+
+```
+:::
+
+::: {.column}
+* untuk SDE, selalu ada di setiap kota,
+* sedangkan untuk Hyderabad, Jaipur, Kerala, Madhya Pradesh. Hanya memiliki 1 job Roles yang menjadi pekerja IT.
+* yang Beragam yakni kota Bangalore, Chennai, dan hyderabad
+:::
+::::::
+
+
+
+
+# Hubungan Laporan dan Lokasi di IT India
+:::::: {.columns}
+::: {.column}
+```{r}
+laporan_loc <- my_data %>%  group_by(Location) %>% summarise(Laporan=mean(Salaries.Reported))
+
+ggplot(laporan_loc,aes(x=reorder(Location,-Laporan),
+                       y=Laporan,fill=Location)) + 
+  geom_bar(stat='identity') + 
+  theme(axis.text.x = element_text(angle=20)) + xlab("Location") +
+  ggtitle("Laporan rata rata karyawan di lokasi tertentu")
+```
+:::
+
+::: {.column}
+* Untuk Bangalore dan Hyderabad, minimal karyawan melapor 2 kali dalam setahun 
+* Ini Lebih rajin dibandingkan masyarakat yang lain
+* dan jika diperhatikan, minimal 1 laporan gajian pada semua lokasi. berarti kemungkinan ada kewajiban pelaporan gaji pada setiap tahun tersebut 
+:::
+::::::
+
+```{r}
+summary(my_data)
+```
+
+# Duga Parameter
+```{r}
+my_data_linear <- my_data %>% select(c(Rating,Salary,
+                                       Salaries.Reported, Location,
+                                       Employment.Status,Job.Roles))
+head(my_data_linear)
+```
+
+# korelasi numeric
+:::::: {.columns}
+::: {.column}
+```{r}
+my_data_linear_num <- my_data_linear %>% select(Rating,
+                                                Salary,Salaries.Reported)
+
+corrplot(cor(my_data_linear_num),method = 'number')
+
+```
+:::
+
+::: {.column}
+* Tidak ada yang berkorelasi pada seluruh attribut bertipe numeric
+:::
+::::::
+
+
+# RelationShip data
+```{r}
+summary(aov(Salary~Location,data=my_data_linear))
+```
+Disini membuktikan bahwa ada hubungan signifikan di setiap value pada variable Location dengan variable respon
+
+
+# Relationship Data
+```{r}
+summary(aov(Salary~Employment.Status,data=my_data_linear))
+```
+
+Disini membuktikan bahwa ada hubungan signifikan di setiap value pada variable Employment.Status dengan variable respon
+
+
+# Relationship Data
+```{r}
+summary(aov(Salary~Job.Roles,data=my_data_linear))
+```
+Disini membuktikan bahwa ada hubungan signifikan di setiap value pada variable Job.Roles dengan variable respon
+
+# Hasil Linear Regresi
+```{r}
+summary(lm(Salary~.,data=my_data_linear))
+```
+* Hasilnya adalah seperti ini dengan R-squared rendah dikarenakan belum dilakukan preprocessing
+* Dan Juga ada beberapa variable yang tidak signifikan 

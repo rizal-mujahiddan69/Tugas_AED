@@ -1,0 +1,171 @@
+---
+title: "G64190069_Rizal Mujahiddan_UAS_AED22.pdf"
+author: "Rizal Mujahiddan"
+date: "6/10/2022"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Import Library 
+```{r echo=FALSE}
+library(ggplot2)
+library(tidyverse)
+library(fitdistrplus)
+library(bestNormalize)
+```
+
+# Buka Data terlebih Dahulu
+```{r}
+data_uas <- read.csv("DATA UAS AED - 2022 - DATA SET.csv")
+head(data_uas)
+```
+
+# Summary
+```{r}
+summary(data_uas)
+```
+
+# Check Outlier 
+## X
+```{r}
+ggplot(data_uas,aes(x=x)) + geom_boxplot() + 
+  ggtitle("Boxplot pada variable x")
+```
+
+* Tidak ada outlier yang perlu dikhawatirkan
+* Cenderung mendekati normal dikarenakan garis mediannya membagi panjang boxplot itu sendiri
+
+##
+```{r}
+ggplot(data_uas,aes(x=y)) + geom_boxplot() + 
+  ggtitle("Boxplot pada variable y")
+```
+
+* Ada outlier
+* Cenderung tidak normal (Panjang sebelah)
+
+
+#  Density Plot
+## x
+```{r}
+ggplot(data_uas,aes(x=x)) + geom_density() + 
+  ggtitle("Boxplot pada variable x")
+```
+
+
+* Bisa Dikatakan mendekati normal saja, dikarenakan masih ada kemungkinan distribusi x itu mendekati distribusi **uniform**
+* kemudian ternyata kurang begitu memuncak distribusinya
+
+```{r}
+descdist(data_uas$x)
+```
+
+* Sudah dipastikan dengan **Cullen and frey graph** , bahwa data x merupakan data berdistribusi uniform bukan normal
+
+
+## y
+```{r}
+ggplot(data_uas,aes(x=y)) + geom_density() + 
+  ggtitle("Boxplot pada variable y")
+```
+
+* distribusinya menjulur kekanan
+* distribusi masih membingungkan dikarenakan grafiknya tidak mewakili grafik apapun ya
+
+```{r}
+descdist(data_uas$y)
+```
+
+* Membingungkan, dikarenakan data tersebut masuk ke distribusi beta, bukan ke distribusi yang lainnya. maka diperlukan **transformasi data**
+
+
+# Scatterplot
+```{r}
+ggplot(data_uas,aes(x,y)) + geom_point() +
+  ggtitle("Scatterplot X vs Y in data uas")
+```
+
+* JIka Diperhatikan, hubungan antara x dan y bukanlah linear
+* kemungkinan hubungan data tersebut merupakan eksponensial maupun polinomial dikarenakan adanya cekung keatas.
+
+
+# Transformasi data
+Berdasarkan dari internet dan artikel, dengan menggunakan bestNormalize. maka akan ditunjukkan dengan metode terbaik untuk menormalisasikan data tersebut
+
+```{r}
+set.seed(1234)
+ytransform <- bestNormalize(data_uas$y,standardize = FALSE)
+ytransform
+```
+
+* Normalisasi yang bagus adalah dengan mengakarkan nilai y tersebut, sesuai dengan fungsi tersebut
+
+
+
+```{r}
+data_uas$y.t <- ytransform$x.t
+ytransform$x.t
+
+```
+
+```{r}
+ggplot(data_uas,aes(x,y.t)) + geom_point() + ggtitle("Scatterpoint X vs Y.t")
+```
+* Jika diperhatikan, nilainya lumayan bagus, tetapi permasalahnnya mengapa ada nilai yang menumpuk pada x yang sama, inilah permasalahannya
+
+# Duga Parameter 
+## linear regression
+```{r}
+linear_reg <- lm('y.t ~ x',data=data_uas)
+summary(linear_reg)
+```
+
+nilai duga dari suatu linear regresi adalah
+y = 9.3396 * x - 13.2996
+
+```{r}
+loessku <- loess('y.t ~ x',data=data_uas)
+summary(loessku)
+```
+
+# optional jika diperlukan suatu transformasi pada X pula
+
+
+```{r}
+set.seed(1234)
+xtransform <- bestNormalize(data_uas$x,standardize = FALSE)
+xtransform
+```
+
+```{r}
+data_uas$x.t <- xtransform$x.t
+xtransform$x.t
+```
+
+```{r}
+ggplot(data_uas,aes(x.t,y.t)) + geom_point() + ggtitle("Scatterpoint X.t vs Y.t")
+```
+* bagus
+
+# duga parameter transformasi X dan Y
+
+```{r}
+linear_reg <- lm('y.t ~ x.t',data=data_uas)
+summary(linear_reg)
+```
+
+nilai duga dari suatu linear regresi adalah
+y = 14.2006 * x - 7.4512
+
+```{r}
+loessku <- loess('y.t ~ x.t',data=data_uas)
+summary(loessku)
+```
+
+
+

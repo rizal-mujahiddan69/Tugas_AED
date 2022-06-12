@@ -1,0 +1,274 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  ignorenonframetext,
+]{beamer}
+\title{Rizal Ganteng}
+\author{Rizal Mujahiddan}
+\date{6/8/2022}
+
+\usepackage{pgfpages}
+\setbeamertemplate{caption}[numbered]
+\setbeamertemplate{caption label separator}{: }
+\setbeamercolor{caption name}{fg=normal text.fg}
+\beamertemplatenavigationsymbolsempty
+% Prevent slide breaks in the middle of a paragraph
+\widowpenalties 1 10000
+\raggedbottom
+\setbeamertemplate{part page}{
+  \centering
+  \begin{beamercolorbox}[sep=16pt,center]{part title}
+    \usebeamerfont{part title}\insertpart\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{section page}{
+  \centering
+  \begin{beamercolorbox}[sep=12pt,center]{part title}
+    \usebeamerfont{section title}\insertsection\par
+  \end{beamercolorbox}
+}
+\setbeamertemplate{subsection page}{
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{part title}
+    \usebeamerfont{subsection title}\insertsubsection\par
+  \end{beamercolorbox}
+}
+\AtBeginPart{
+  \frame{\partpage}
+}
+\AtBeginSection{
+  \ifbibliography
+  \else
+    \frame{\sectionpage}
+  \fi
+}
+\AtBeginSubsection{
+  \frame{\subsectionpage}
+}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Rizal Ganteng},
+  pdfauthor={Rizal Mujahiddan},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\newif\ifbibliography
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}{Perkenalan}
+\protect\hypertarget{perkenalan}{}
+Rizal Mujahiddan\\
+G64190069\\
+P1 AED\\
+\strut \\
+10 Juni 2022
+\end{frame}
+
+\begin{frame}{Perkenalan Data}
+\protect\hypertarget{perkenalan-data}{}
+Data ini berasal dari situs kaggle yang berjudul
+\href{https://www.kaggle.com/datasets/iamsouravbanerjee/software-professional-salaries-2022?select=Salary_Dataset_with_Extra_Features.csv}{\textbf{Salary
+Dataset - 2022}}. data ini menceritakan mengenai pekerjaan
+\emph{software engineering} dan pendapatannya di India pada tahun 2021
+\end{frame}
+
+\begin{frame}[fragile]{Deskripsi Data}
+\protect\hypertarget{deskripsi-data}{}
+Data ini memiliki nama atribut
+
+\begin{verbatim}
+## [1] "22770 records and 8 columns"
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  Company Rating : Rating pekerjaan di suatu tempat
+\item
+  Company Name : Nama Perusahaan
+\item
+  Job Title : Nama Pekerjaan
+\item
+  Salary (Indian Rupee - ₹)) : Gaji dalam Rupee
+\item
+  Salaries Reported : Gaji yang dilaporkan
+\item
+  Location : Tempat Perusahaan
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Summary Data}
+\protect\hypertarget{summary-data}{}
+\begin{verbatim}
+## Min.   :1.000   1st Qu.:3.700   Median :3.900   Mean   :3.918   3rd Qu.:4.200   Max.   :5.000   Length:22770       Class :character   Mode  :character   NA NA NA Length:22770       Class :character   Mode  :character   NA NA NA Min.   :    2112   1st Qu.:  300000   Median :  500000   Mean   :  695387   3rd Qu.:  900000   Max.   :90000000   Min.   :  1.000   1st Qu.:  1.000   Median :  1.000   Mean   :  1.856   3rd Qu.:  1.000   Max.   :361.000   Length:22770       Class :character   Mode  :character   NA NA NA Length:22770       Class :character   Mode  :character   NA NA NA Length:22770       Class :character   Mode  :character   NA NA NA
+\end{verbatim}
+\end{frame}
+
+\begin{frame}{Missing Value Plot}
+\protect\hypertarget{missing-value-plot}{}
+\includegraphics{G64190069_Rizal-Mujahiddan_tugas-akhir-AED_files/figure-beamer/unnamed-chunk-4-1.pdf}
+\end{frame}
+
+\begin{frame}{Missing Value Plot}
+\protect\hypertarget{missing-value-plot-1}{}
+\begin{itemize}
+\tightlist
+\item
+  Jika diperhatikan maka Tidak ada missing value
+\item
+  Tidak perlu praprocessing data mengenai handling missing value
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Selection Between categoric and numerical}
+\protect\hypertarget{selection-between-categoric-and-numerical}{}
+\begin{verbatim}
+## [1] "column name of numeric"
+\end{verbatim}
+
+\begin{verbatim}
+## [1] "Rating"            "Salary"            "Salaries.Reported"
+\end{verbatim}
+
+\begin{verbatim}
+## [1] "column name of categoric"
+\end{verbatim}
+
+\begin{verbatim}
+## [1] "Company.Name"      "Job.Title"         "Location"         
+## [4] "Employment.Status" "Job.Roles"
+\end{verbatim}
+\end{frame}
+
+\begin{frame}{Density Plot numeric attribute}
+\protect\hypertarget{density-plot-numeric-attribute}{}
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\includegraphics{G64190069_Rizal-Mujahiddan_tugas-akhir-AED_files/figure-beamer/unnamed-chunk-6-1.pdf}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\begin{itemize}
+\tightlist
+\item
+  Distribusi cenderung menjulur ke kiri
+\item
+  cenderung memiliki puncak mendekati 4 sehingga rata rata atau modus
+  mendekati 4
+\item
+  Distribusinya bukanlah normal
+\item
+  Rating perusahaan tersebut lumayan bagus, dengan kebanyakan yakni 4
+\item
+  disinilah dengan rata rata 3.918, maka sebaiknya. dengan adanya
+  perusahaan tersebut harus dinaikkan melebihi 4
+\end{itemize}
+\end{column}
+\end{columns}
+
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\includegraphics{G64190069_Rizal-Mujahiddan_tugas-akhir-AED_files/figure-beamer/unnamed-chunk-7-1.pdf}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\begin{itemize}
+\tightlist
+\item
+  Distribusi cenderung menjulur ke kanan
+\item
+  Median 500000
+\item
+  Mean 695387
+\item
+  Distribusinya bukanlah normal
+\item
+  Kebanyakan Pekerja IT Digaji rata rata Rupee ₹695.387,00 yang dimana
+  melebihi gaji minimum india ₹4.500,00 per bulan.
+\item
+  Bahkan melebihi karyawan biasa ₹80.000 per bulan,
+\item
+  Secara grafik ini. menjadi pekerja IT di India sangatlah menguntungkan
+  dibandingkan pekerjaan yang lain
+\end{itemize}
+\end{column}
+\end{columns}
+
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\includegraphics{G64190069_Rizal-Mujahiddan_tugas-akhir-AED_files/figure-beamer/unnamed-chunk-8-1.pdf}
+\end{column}
+
+\begin{column}{0.48\textwidth}
+\begin{itemize}
+\tightlist
+\item
+  Distribusi cenderung menjulur ke kanan
+\item
+  Median 1.000\\
+\item
+  Mean 1.856
+\item
+  Distribusinya bukanlah normal
+\item
+  jika diperhatikan, para karyawan kurang terbuka terhadap gajinya
+\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+\end{document}

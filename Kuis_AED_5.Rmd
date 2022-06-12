@@ -1,0 +1,444 @@
+---
+title: "Tugas AED 5"
+author: "Rizal Mujahiddan"
+date: "5/27/2022"
+output: powerpoint_presentation
+---
+
+# Identitas
+Rizal Mujahiddan
+G64190069
+AED
+
+# Penjelasan Mengenai penduga ragam
+- Dikarenakan Ragam adalah kuadrat dari sd 
+- maka untuk penduga ragam diganti dengan simpangan baku 
+- perbandingannya dengan MAD ,IQR dan gini mean difference, maka yang sesuai adalah simpangan Baku ya
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+library(fitdistrplus)
+library(lmomco)
+library(openxlsx)
+library(readxl)
+library(psych)
+library(MASS)
+```
+
+
+
+
+```{r include=FALSE}
+multiplesheets <- function(fname) {
+   
+  # getting info about all excel sheets
+  sheets <- readxl::excel_sheets(fname)
+  tibble <- lapply(sheets, function(x) readxl::read_excel(fname, sheet = x))
+  data_frame <- lapply(tibble, as.data.frame)
+    
+  # assigning names to data frames
+  names(data_frame) <- sheets
+    
+  # print data frame
+  data_frame
+}
+```
+
+```{r}
+data_olah <- multiplesheets("21.xlsx")
+```
+
+```{r}
+data_1 <-data_olah$Sheet1$`Data 1`
+data_2 <-data_olah$Sheet2$`Data 2`
+data_3 <-data_olah$Sheet3$`Data 3`
+data_4 <-data_olah$Sheet4$`Data 4`
+
+data_5 <-data_olah$Sheet5$`Data 5`
+data_6 <-data_olah$Sheet6$`Data 6`
+data_7 <-data_olah$Sheet7$`Data 7`
+data_8 <-data_olah$Sheet8$`Data 8`
+```
+# 10 Head Data 1
+```{r}
+tail(data_1,10)
+```
+
+# 10 Head Data 2
+```{r}
+tail(data_2,10)
+```
+
+# 10 Head Data 3
+```{r}
+tail(data_3,10)
+```
+# 10 Head Data 4
+```{r}
+tail(data_4,10)
+```
+# 10 Head Data 5
+```{r}
+tail(data_5,10)
+```
+# 10 Head Data 6
+```{r}
+tail(data_6,10)
+```
+# 10 Head Data 7
+```{r}
+tail(data_7,10)
+```
+# 10 Head Data 8
+```{r}
+tail(data_8,10)
+```
+
+
+# Penduga Nilai Tengah Data 1
+```{r}
+print("Mean")
+mean_1 <- mean(data_1,na.rm=TRUE)
+mean_1
+print("Trimmed Mean")
+meanT_1<- mean(data_1,trim= 0.05,na.rm=FALSE)
+meanT_1
+print("Winsorized Mean")
+winsor_1 <- winsor.mean(data_1,trim = 0.05)
+winsor_1
+print("M-Estimators")
+huber_1 <-huber(data_1,k=0.05)$m
+huber_1
+```
+
+# Penduga Simpangan Baku Data 1
+```{r}
+print("Simpangan Baku Data 1")
+sd_1 <- sd(data_1,na.rm=TRUE)
+sd_1
+print("IQR Data 1")
+iqr_1 <-  1.3490 * sd(data_1)
+iqr_1
+print("Mean Absolute Deviation Data 1")
+mad_1 <- mad(data_1)
+mad_1
+print("gini mean difference Data 1")
+gini_1 <- gini.mean.diff(data_1)$gini
+gini_1
+```
+
+# Boxplot Data 1
+```{r}
+boxplot(data_1,horizontal=TRUE,
+        main="Boxplot Data 1")
+```
+# Penjelasan Data 1
+- Untuk penduga Nilai Tengah,Kasus Ini lebih cocok di Trimmed Mean , dikarenakan nilainya mendekati nilai Mean tersebut yah, dan juga tidak ada outlier sehingga dengan trimmed mean tidak ada yang perlu dikhawatirkan
+- Untuk penduga Ragam , sudah dijelaskan diawal berarti hanya mengunnankan penduga simpangan baku dikarenakan MAD mendekati simpangan baku, maka yang terbaik adalah MAD dan juga tak ada outlier
+
+
+# Penduga Nilai Tengah data 2
+```{r}
+print("Mean")
+mean_2 <- mean(data_2,na.rm=TRUE)
+mean_2
+print("Trimmed Mean")
+meanT_2 <- mean(data_2,trim= 0.05,na.rm=FALSE)
+meanT_2
+print("Winsorized Mean")
+winsor_2 <-winsor.mean(data_2,trim = 0.05)
+print("M-Estimators")
+huber_2 <-huber(data_2)$m
+huber_2
+```
+
+# Penduga Simpangan Baku Data 2
+```{r}
+print("Simpangan Baku Data 2")
+sd_2 <- sd(data_2,na.rm=TRUE)
+sd_2
+print("IQR Data 2")
+iqr_2 <-  1.3490 * sd(data_2)
+iqr_2
+print("Mean Absolute Deviation Data 2")
+mad_2 <- mad(data_2)
+mad_2
+print("gini mean difference Data 2")
+gini_2 <- gini.mean.diff(data_2)$gini
+gini_2
+```
+# Boxplot Data 2
+```{r}
+boxplot(data_2,horizontal=TRUE,
+        main="Boxplot Data 2")
+```
+
+# Penjelasan Data 2
+- Untuk Kasus Ini lebih cocok di Winsorzed Mean , dikarenakan nilainya mendekati nilai Mean tersebut yah. dan juga harus menyamakan nilai outlier tersebut dengan Quartil tersebut, maka distribusi yang condong ke kanan bisa di seimbangkan dengan winsorzed tersebut tersebut
+- untuk pengecekan ini, bahwa simpangan yang terbaik adalah gini mean difference, dikarenakan nilainya mendekati simpangan baku yaa 
+
+# Penduga Nilai Tengah data 3
+```{r}
+print("Mean")
+mean_3 <- mean(data_3,na.rm=TRUE)
+mean_3
+print("Trimmed Mean")
+meanT_3 <- mean(data_3,trim= 0.05,na.rm=FALSE)
+meanT_3
+print("Winsorized Mean")
+winsor_3 <-winsor.mean(data_3,trim = 0.05)
+winsor_3
+print("M-Estimators")
+huber_3 <- huber(data_3)$m
+huber_3
+```
+
+# Penduga Simpangan Baku Data 3
+```{r}
+print("Simpangan Baku Data 3")
+sd_3 <- sd(data_3,na.rm=TRUE)
+sd_3
+print("IQR Data 3")
+iqr_3 <-  1.3490 * sd(data_3)
+iqr_3
+print("Mean Absolute Deviation Data 3")
+mad_3 <- mad(data_3)
+mad_3
+print("gini mean difference Data 3")
+gini_3 <- gini.mean.diff(data_3)$gini
+gini_3
+```
+
+# Boxplot Data 3
+```{r}
+boxplot(data_3,horizontal=TRUE,
+        main="Boxplot Data 3")
+```
+
+# Penjelasan Data 3
+- Untuk Kasus Ini lebih cocok di Winsorzed Mean , dikarenakan nilainya mendekati nilai Mean tersebut yah. dan juga harus menyamakan nilai outlier tersebut dengan Quartil tersebut, maka distribusi yang condong ke kanan bisa di seimbangkan dengan winsorzed tersebut tersebut
+- Kasus ini yang terbaik adalah menggunakan gini mean difference dikarenakan adanya lebih dekat dengan simpangan baku dibandingan dengan penduga yang lain
+
+# Penduga Nilai Tengah data 4
+```{r}
+print("Mean")
+mean_4 <- mean(data_4,na.rm=TRUE)
+mean_4
+print("Trimmed Mean")
+meanT_4 <- mean(data_4,trim= 0.05,na.rm=FALSE)
+meanT_4
+print("Winsorized Mean")
+winsor_4 <-winsor.mean(data_4,trim = 0.05)
+winsor_4
+print("M-Estimators")
+huber_4 <- huber(data_4)$m
+huber_4
+```
+
+# Penduga Simpangan Baku Data 4
+```{r}
+print("Simpangan Baku Data 4")
+sd_4 <- sd(data_4,na.rm=TRUE)
+sd_4
+print("IQR Data 4")
+iqr_4 <-  1.4490 * sd(data_4)
+iqr_4
+print("Mean Absolute Deviation Data 4")
+mad_4 <- mad(data_4)
+mad_4
+print("gini mean difference Data 4")
+gini_4 <- gini.mean.diff(data_4)$gini
+gini_4
+```
+
+# Boxplot Data 4
+```{r}
+boxplot(data_4,horizontal=TRUE,
+        main="Boxplot Data 4")
+```
+
+# Penjelasan Data 4
+- Untuk Kasus Ini lebih cocok di M-Estimator , dikarenakan nilainya mendekati nilai Mean tersebut yah. dan juga harus membuat huber yang mampu menyederhanakan suatu persamaan maka distribusi yang memiliki outlier dikedua bagian bisa dihasilkan dengan huber tersebut 
+- Untuk penduga simpangan baku , yang terbaik adalah gini mean difference dikarenakan simpangan baku tersebut adalah mendekati yaaa.
+
+# Penduga Nilai Tengah data 5
+```{r}
+print("Mean")
+mean_5 <- mean(data_5,na.rm=TRUE)
+mean_5
+print("Trimmed Mean")
+meanT_5 <- mean(data_5,trim= 0.05,na.rm=FALSE)
+meanT_5
+print("Winsorized Mean")
+winsor_5 <-winsor.mean(data_5,trim = 0.05)
+winsor_5
+print("M-Estimators")
+huber_5 <- huber(data_5)$m
+huber_5
+```
+
+# Penduga Simpangan Baku Data 5
+```{r}
+print("Simpangan Baku Data 5")
+sd_5 <- sd(data_5,na.rm=TRUE)
+sd_5
+print("IQR Data 5")
+iqr_5 <-  1.5590 * sd(data_5)
+iqr_5
+print("Mean Absolute Deviation Data 5")
+mad_5 <- mad(data_5)
+mad_5
+print("gini mean difference Data 5")
+gini_5 <- gini.mean.diff(data_5)$gini
+gini_5
+```
+# Boxplot Data 5
+```{r}
+boxplot(data_5,horizontal=TRUE,
+        main="Boxplot Data 5")
+```
+
+# penjelasan Data 5
+- untuk kasus penduga nilai tengah, yang bagus adalah Trimmed Mean,dikarenakan mendekati nilainya dan juga tidak ada outliernya jika diperhatikan dari sd
+- kasus penduga simpangan baku, yang lebih baik adalah gini mean difference dikarenakan bernilai dekat yaa dibanding yang lain
+
+
+# Penduga Nilai Tengah data 6
+```{r}
+print("Mean")
+mean_6 <- mean(data_6,na.rm=TRUE)
+mean_6
+print("Trimmed Mean")
+meanT_6 <- mean(data_6,trim= 0.06,na.rm=FALSE)
+meanT_6
+print("Winsorized Mean")
+winsor_6 <-winsor.mean(data_6,trim = 0.06)
+winsor_6
+print("M-Estimators")
+huber_6 <- huber(data_6)$m
+huber_6
+```
+
+# Penduga Simpangan Baku Data 6
+```{r}
+print("Simpangan Baku Data 6")
+sd_6 <- sd(data_6,na.rm=TRUE)
+sd_6
+print("IQR Data 6")
+iqr_6 <-  1.6690 * sd(data_6)
+iqr_6
+print("Mean Absolute Deviation Data 6")
+mad_6 <- mad(data_6)
+mad_6
+print("gini mean difference Data 6")
+gini_6 <- gini.mean.diff(data_6)$gini
+gini_6
+```
+
+# Boxplot Data 6
+```{r}
+boxplot(data_6,horizontal=TRUE,
+        main="Boxplot Data 5")
+```
+
+# penjelasan Data 6
+- Dikarenakan mean lebih mendekati nilainya dengan Trimmed Mean, maka hasilnya lebih cocok ke Trimmed Mean dan juga ternyata hanya sedikit partikelnya yaaa outliernya.
+- kasus penduga simpangan baku, yang lebih baik adalah gini mean difference dikarenakan bernilai dekat yaa dibanding yang lain
+
+
+# Penduga Nilai Tengah data 7
+```{r}
+print("Mean")
+mean_7 <- mean(data_7,na.rm=TRUE)
+mean_7
+print("Trimmed Mean")
+meanT_7 <- mean(data_7,trim= 0.07,na.rm=FALSE)
+meanT_7
+print("Winsorized Mean")
+winsor_7 <-winsor.mean(data_7,trim = 0.07)
+winsor_7
+print("M-Estimators")
+huber_7 <- huber(data_7)$m
+huber_7
+```
+
+# Penduga Simpangan Baku Data 7
+```{r}
+print("Simpangan Baku Data 7")
+sd_7 <- sd(data_7,na.rm=TRUE)
+sd_7
+print("IQR Data 7")
+iqr_7 <-  1.7790 * sd(data_7)
+iqr_7
+print("Mean Absolute Deviation Data 7")
+mad_7 <- mad(data_7)
+mad_7
+print("gini mean difference Data 7")
+gini_7 <- gini.mean.diff(data_7)$gini
+gini_7
+```
+
+# Boxplot Data 7
+```{r}
+boxplot(data_7,horizontal=TRUE,
+        main="Boxplot Data 7")
+```
+
+# Penjelasan Data 7
+- Dikarenakan mean lebih mendekati nilainya dengan Trimmed Mean, maka hasilnya lebih cocok ke Trimmed Mean dan juga ternyata hanya sedikit partikelnya yaaa outliernya.
+- pada kasus penduga simpangan baku , dikarenakan gini mean difference lebih mendekati nilainya dengan simpangan baku. yang baik adalah gini mean difference
+
+# Penduga Nilai Tengah data 8
+```{r}
+print("Mean")
+mean_8 <- mean(data_8,na.rm=TRUE)
+mean_8
+print("Trimmed Mean")
+meanT_8 <- mean(data_8,trim= 0.08,na.rm=FALSE)
+meanT_8
+print("Winsorized Mean")
+winsor_8 <-winsor.mean(data_8,trim = 0.08)
+winsor_8
+print("M-Estimators")
+huber_8 <- huber(data_8)$m
+huber_8
+```
+
+# Penduga Simpangan Baku Data 8
+```{r}
+print("Simpangan Baku Data 8")
+sd_8 <- sd(data_8,na.rm=TRUE)
+sd_8
+print("IQR Data 8")
+iqr_8 <-  1.8890 * sd(data_8)
+iqr_8
+print("Mean Absolute Deviation Data 8")
+mad_8 <- mad(data_8)
+mad_8
+print("gini mean difference Data 8")
+gini_8 <- gini.mean.diff(data_8)$gini
+gini_8
+```
+
+# Boxplot Data 8
+```{r}
+boxplot(data_8,horizontal=TRUE,
+        main="Boxplot Data 8")
+```
+
+# Penjelasan Data 8
+- Dikarenakan mean lebih mendekati nilainya dengan Trimmed Mean, maka hasilnya lebih cocok ke Trimmed Mean dan juga ternyata hanya sedikit partikelnya yaaa outliernya.
+- pada kasus penduga simpangan baku , dikarenakan gini mean difference lebih mendekati nilainya dengan simpangan baku. yang baik adalah gini mean difference
+
+
+# Kesimpulannya
+- Untuk penduga nilai tengah
+  + Tanpa Outlier -> Trimmed Mean
+  + Skewness Outlier  -> Winsorzed Mean
+  + Two di kedua Outlier -> M-Estimators
+- Untuk penduga Simpangan baku, maka yang terbaik adalah gini mean difference dikarenakan selalu mendekati simpangan baku pada umumnya di distribusi
